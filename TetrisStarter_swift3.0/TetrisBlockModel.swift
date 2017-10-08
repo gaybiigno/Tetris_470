@@ -15,7 +15,7 @@ enum OffsetTraversal {
 }
 
 class TetrisBlockModel: NSObject {
-    private let grid: [[Bool]]  // Every row is expected to have the same number of columns
+	private var grid: [[Bool]]  // Every row is expected to have the same number of columns
     private var blockEdgeAttributes: GridEdgeAttributes!
     private var blockEdges = [TetrisBlockEdge]()
     private let edges: [Edges] = [.bottom, .left, .top, .right]  // Any order will work
@@ -31,7 +31,7 @@ class TetrisBlockModel: NSObject {
             blockEdges.append( blockEdgeAttributes.edgeAttributes(edgeName: edge)! )
         }
     }
-    
+	
     func printEdges() {
         for edge in edges {
             let edgeAttr = edgeAttributes(edge: edge)
@@ -39,17 +39,24 @@ class TetrisBlockModel: NSObject {
             print(edgeAttr.edgeOffsets())
         }
     }
-    
+	
+	func getEdge(name: Edges) -> [Int]{
+		return edgeAttributes(edge: name).edgeOffsets()
+	}
+	
+	// TODO: CHANGE GRID ON ROTATION
     func didRotateClockwise() {
         let lastIdx = blockEdges.count - 1
         printEdges()
 		print()
+		
         blockEdges = [blockEdges[lastIdx]] + blockEdges[0 ... lastIdx - 1]
         blockEdges[0].reverseOffsets()
         blockEdges[2].reverseOffsets()
         printEdges()
     }
-    
+	
+	// TODO: CHANGE GRID ON ROTATION
     func didRotateCounterClockwise() {
         let lastIdx = blockEdges.count - 1
         printEdges()
@@ -154,8 +161,7 @@ private extension TetrisBlockModel {
             }
         }
 		
-		let numVisibleRows = (lastVisibleRow == firstRow + 1) ? lastVisibleRow :
-			(lastVisibleRow - firstRow + 1)
+		let numVisibleRows = (lastVisibleRow == firstRow + 1) ? lastVisibleRow : (lastVisibleRow - firstRow + 1)
 		
         let numVisibleColumns = lastVisibleColumn - firstColumn + 1
         var visibleBlock = [[Bool]]()

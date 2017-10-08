@@ -18,6 +18,7 @@ enum Edges: Int {
 struct GridWrapper {  // a wrapper around a 2D array so that we can talk about the 
                       // the number of columns by use of numColumns() instead of
                       // grid[0].count
+	
     let grid: [[Bool]]
     
     init(_ grid: [[Bool]]) {
@@ -138,7 +139,6 @@ private extension GridEdgeAttributes {
                 firstVisibleBlockIdx -= 1
             }
             edgeValues.append(grid.numColumns() - firstVisibleBlockIdx - 1)
-
         }
         return edgeValues
     }

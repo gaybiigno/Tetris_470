@@ -13,6 +13,7 @@ class TetrisViewController: UIViewController {
     let blockSize = 30
     var tetrisBoard: TetrisBoardView!
     var block: TetrisBlockView!
+	var boardArray: TetrisBoardArray!
     var inMotion = false
     var paused = false
 
@@ -53,6 +54,12 @@ class TetrisViewController: UIViewController {
 		
 		// Setting board bounds to entire screen
 		block.setBoardBounds(boardSize: UIScreen.main.bounds.size)
+		
+		let numRows = Int(UIScreen.main.bounds.size.height / CGFloat(blockSize))
+		let numColumns = Int(UIScreen.main.bounds.size.width / CGFloat(blockSize))
+		
+		boardArray = TetrisBoardArray(numRows: numRows, numCols: numColumns)
+		block.getBoardArray(array: boardArray)
     }
 	
 	func startGrid() {

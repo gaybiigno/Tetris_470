@@ -31,7 +31,7 @@ class TetrisBoardView: UIView {
 
         var circles = [UIBezierPath]()
         for row in 0 ... numRows {
-            let y = 30 + gapBetweenCenters * CGFloat(row) // lined up w/ 10 +
+            let y = 30 + gapBetweenCenters * CGFloat(row) // lined up w/ 30 +
             for column in 0 ... numColumns {
                 let x = gapBetweenCenters * CGFloat(column)
                 let center = CGPoint(x: x, y: y)

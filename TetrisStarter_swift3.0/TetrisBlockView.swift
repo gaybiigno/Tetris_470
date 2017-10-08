@@ -19,6 +19,7 @@ class TetrisBlockView: UIView {
 	var boardBounds = CGSize()
 	var hasTurned = false
 	var toTravel = CGFloat(0.0)
+	var boardArray: TetrisBoardArray!
     
 	init(color: UIColor, grid: TetrisBlockModel, blockSize: Int, startY: CGFloat, boardCenterX: CGFloat) {
         blockColor = color
@@ -34,10 +35,16 @@ class TetrisBlockView: UIView {
         super.init(frame: frame)
         backgroundColor = UIColor.clear
         addSubBlocksToView(grid: grid, blockSize: blockSize)
-        animator = UIViewPropertyAnimator(duration: 6.0, curve: .linear) { [unowned self] in
+		animator = UIViewPropertyAnimator(duration: 6.0, curve: .linear) { [unowned self] in
             self.center.y += self.toTravel
         }
+		animator.addCompletion{_ in self.endDescent()}
     }
+
+	func getBoardArray(array: TetrisBoardArray) {
+		boardArray = array
+		boardArray.printArray()
+	}
 	
 	func setBoardBounds(boardSize: CGSize){
 		boardBounds = boardSize
@@ -105,6 +112,7 @@ class TetrisBlockView: UIView {
     }
     
 	func rotateBlock(rotationAngle: CGFloat) {
+		
 		animator.pauseAnimation()
 		
 		let aPoint = CGPoint(x: 0.0, y: 0.0)
@@ -132,8 +140,6 @@ class TetrisBlockView: UIView {
 			})
 			self.animator.startAnimation()
 		}
-		
-		
 		rotation.startAnimation()
 	}
     
@@ -161,6 +167,23 @@ class TetrisBlockView: UIView {
         printEdgeValues(edge: Edges.bottom)
 		print("END CW ROTATE")
     }
+	
+	
+	// Adds final placement of block to board's array
+	func endDescent() {
+		let (row, col) = boardArray.getRowCol(point: CGPoint(x: self.frame.minX, y: self.frame.minY))
+		
+		for i in 0 ..< blockModel.blocksHeight() {
+			for j in 0 ..< blockModel.blocksWide() {
+				if blockModel.hasBlockAt(row: i, column: j) {
+					if !boardArray.hasBlockAt(row: row + i, column: col + j) {
+						boardArray.changeValue(row: row + i, column: col + j)
+					}
+				}
+			}
+		}
+		boardArray.printArray()
+	}
 	
 	// Draws the blocks
     func addSubBlocksToView(grid: TetrisBlockModel, blockSize: Int) {
