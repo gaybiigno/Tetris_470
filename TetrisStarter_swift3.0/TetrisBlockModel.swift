@@ -54,7 +54,19 @@ class TetrisBlockModel: NSObject {
         blockEdges[0].reverseOffsets()
         blockEdges[2].reverseOffsets()
         printEdges()
+		
+		rotateGrid()
     }
+	
+	func rotateGrid() {
+		var temp = [[Bool]](repeatElement([Bool](repeatElement(false, count: numRows())), count: numColumns()))
+		for row in 0 ..< numColumns() {
+			for cols in 0 ..< numRows() {
+				temp[row][cols] = grid[numRows() - cols - 1][row]
+			}
+		}
+		grid = temp
+	}
     
     func edgeAttributes(edge: Edges) -> TetrisBlockEdge {
         var idx = 0

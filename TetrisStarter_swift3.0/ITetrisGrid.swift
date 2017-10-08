@@ -12,7 +12,7 @@ class ITetrisGrid: TetrisBlockModel {
 
 	private var color = UIColor.init(red: 0, green: 0.5, blue: 0.5, alpha: 0.9)
 	
-	let igrid = [ // TODO
+	let igrid = [
 		[true, true, true, true],
 		[false, false, false, false]
 	]
