@@ -28,7 +28,7 @@ class TetrisBlockModel: NSObject {
         super.init()
         blockEdgeAttributes = GridEdgeAttributes(grid: smallestVisibleGrid()!)
         for edge in edges {
-            blockEdges.append( blockEdgeAttributes.edgeAttributes(edgeName: edge)! )
+			blockEdges.append( blockEdgeAttributes.edgeAttributes(edgeName: edge)! )
         }
     }
 	
@@ -44,7 +44,6 @@ class TetrisBlockModel: NSObject {
 		return edgeAttributes(edge: name).edgeOffsets()
 	}
 	
-	// TODO: CHANGE GRID ON ROTATION
     func didRotateClockwise() {
         let lastIdx = blockEdges.count - 1
         printEdges()

@@ -28,6 +28,7 @@ class TetrisBoardView: UIView {
         super.draw(rect)
         let numRows = Int(rect.size.height / CGFloat(gapBetweenCenters))
         let numColumns = Int(rect.size.width / CGFloat(gapBetweenCenters))
+		print("BOARD ROWS: \(numRows), COLS: \(numColumns)")
 
         var circles = [UIBezierPath]()
         for row in 0 ... numRows {

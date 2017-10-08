@@ -16,7 +16,6 @@ class TetrisViewController: UIViewController {
 	var boardArray: TetrisBoardArray!
     var inMotion = false
     var paused = false
-
     
     @IBAction func didTapTheView(_ sender: UITapGestureRecognizer) {
         if !inMotion  {
@@ -103,10 +102,7 @@ class TetrisViewController: UIViewController {
 			                        startY: grid.startY(), boardCenterX: CGFloat(centerX))
 		}
 	}
-	
-	func playGame() {
-		
-	}
+
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()

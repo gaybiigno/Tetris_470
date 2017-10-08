@@ -18,9 +18,13 @@ class TetrisBlockView: UIView {
     var blockBounds: CGSize
 	var boardBounds = CGSize()
 	var hasTurned = false
+	var hasFinished = false
 	var toTravel = CGFloat(0.0)
 	var boardArray: TetrisBoardArray!
-    
+	var clock = Timer()
+	var isPaused = true
+	let maxRows = 20
+	
 	init(color: UIColor, grid: TetrisBlockModel, blockSize: Int, startY: CGFloat, boardCenterX: CGFloat) {
         blockColor = color
         blockModel = grid
@@ -30,16 +34,50 @@ class TetrisBlockView: UIView {
         blockBounds = CGSize(width: width, height: height)
         var x = boardCenterX
 		x -= CGFloat(blockSize) / CGFloat(2.0)
-		toTravel = CGFloat(blockSize * 18)
+		toTravel = CGFloat(blockSize * maxRows)
         let frame = CGRect(x: x, y: startY, width: width, height: height)
         super.init(frame: frame)
         backgroundColor = UIColor.clear
         addSubBlocksToView(grid: grid, blockSize: blockSize)
-		animator = UIViewPropertyAnimator(duration: 6.0, curve: .linear) { [unowned self] in
+		animator = UIViewPropertyAnimator(duration: 10.0, curve: .linear) { [unowned self] in
             self.center.y += self.toTravel
         }
-		animator.addCompletion{_ in self.endDescent()}
+		animator.addCompletion{_ in self.endDescent()
+			self.hasFinished = true
+		}
     }
+	
+	// Initializes timer
+	func startTimer() -> Timer {
+		let timer = Timer.scheduledTimer(timeInterval: 0.5, target: self, selector: #selector(updateTimer), userInfo: nil, repeats: true)
+		isPaused = false
+		return timer
+	}
+	
+	func updateTimer(_ sender: Timer) {
+		let (row, col) = boardArray.getRowCol(point: CGPoint(x: self.frame.minX, y: self.frame.maxY))
+		
+		for i in row ..< row + 1 {
+			for j in col - 1 ..< col + 1 {
+				if i == maxRows || j < 0 || j > 12 {
+					continue
+				}
+				
+				if boardArray.hasBlockAt(row: row + i, column: col + j) {
+					print("STOP")
+				}
+			}
+		}
+	}
+	
+	func pauseResume() {
+		if isPaused {
+			clock = startTimer()
+		} else {
+			clock.invalidate()
+		}
+		isPaused = !isPaused
+	}
 
 	func getBoardArray(array: TetrisBoardArray) {
 		boardArray = array
@@ -52,18 +90,23 @@ class TetrisBlockView: UIView {
 
     func startDescent() {
         animator.startAnimation()
+		clock = startTimer()
         blockModel.printEdges()
     }
     
     func pauseAnimation() {
         if animator.state == .active {
             animator.pauseAnimation()
+			if clock.isValid {
+				pauseResume()
+			}
         }
     }
     
     func startAnimation() {
         if animator.state == .active {
             animator.startAnimation()
+			pauseResume()
         }
     }
 	
