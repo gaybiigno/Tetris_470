@@ -55,17 +55,6 @@ class TetrisBlockModel: NSObject {
         blockEdges[2].reverseOffsets()
         printEdges()
     }
-	
-	// TODO: CHANGE GRID ON ROTATION
-    func didRotateCounterClockwise() {
-        let lastIdx = blockEdges.count - 1
-        printEdges()
-        print()
-        blockEdges = blockEdges[1 ... lastIdx] + [blockEdges[0]]
-        blockEdges[1].reverseOffsets()
-        blockEdges[3].reverseOffsets()
-        printEdges()
-    }
     
     func edgeAttributes(edge: Edges) -> TetrisBlockEdge {
         var idx = 0

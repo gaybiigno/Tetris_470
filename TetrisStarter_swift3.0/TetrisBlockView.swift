@@ -143,19 +143,6 @@ class TetrisBlockView: UIView {
 		rotation.startAnimation()
 	}
     
-    func rotateCounterClockwise() {
-		print("START CCW ROTATE")
-        if animator.state != .active {
-            return
-        }
-        animator.pauseAnimation()
-        rotateBlock(rotationAngle: -CGFloat.pi / 2.0)
-        blockModel.didRotateCounterClockwise()
-        printEdgeValues(edge: Edges.bottom)
-        animator.startAnimation()
-		print("END CCW ROTATE")
-    }
-    
     func rotateClockWise() {
 		print("START CW ROTATE")
         if animator.state != .active {

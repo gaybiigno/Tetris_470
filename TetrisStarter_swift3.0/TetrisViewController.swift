@@ -26,11 +26,7 @@ class TetrisViewController: UIViewController {
         }
         let location = sender.location(in: tetrisBoard)
         print(location)
-        if location.x < tetrisBoard.bounds.width / CGFloat(2.0) {
-            block.rotateCounterClockwise()
-        } else {
-            block.rotateClockWise()
-        }
+		block.rotateClockWise()
      }
     
     @IBAction func didSwipeView(_ sender: UISwipeGestureRecognizer) {
