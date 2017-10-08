@@ -30,7 +30,6 @@ class TetrisBlockModel: NSObject {
         for edge in edges {
             blockEdges.append( blockEdgeAttributes.edgeAttributes(edgeName: edge)! )
         }
-        
     }
     
     func printEdges() {
@@ -43,32 +42,22 @@ class TetrisBlockModel: NSObject {
     
     func didRotateClockwise() {
         let lastIdx = blockEdges.count - 1
-
-        print("begin printing edges before rotating them cw")
         printEdges()
-        print("end printing edges before rotating them cw")
-
+		print()
         blockEdges = [blockEdges[lastIdx]] + blockEdges[0 ... lastIdx - 1]
         blockEdges[0].reverseOffsets()
         blockEdges[2].reverseOffsets()
-        
-        print("begin printing edges after rotating them cw")
         printEdges()
-        print("end printing edges after rotating them cw")
     }
     
     func didRotateCounterClockwise() {
         let lastIdx = blockEdges.count - 1
-        print("begin printing edges before rotating them ccw")
         printEdges()
-        print("end printing edges before rotating them ccw")
         print()
         blockEdges = blockEdges[1 ... lastIdx] + [blockEdges[0]]
         blockEdges[1].reverseOffsets()
         blockEdges[3].reverseOffsets()
-        print("begin printing edges after rotating them ccw")
         printEdges()
-        print("end printing edges after rotating them ccw")
     }
     
     func edgeAttributes(edge: Edges) -> TetrisBlockEdge {
@@ -177,15 +166,6 @@ private extension TetrisBlockModel {
 			}
 			visibleBlock.append(currentRow)
 		}
-		
-//		for row in 0 ..< numVisibleRows {
-//			var currentRow = [Bool]()
-//			for column in 0 ..< numVisibleColumns {
-//				currentRow.append( hasBlockAt(row: row + firstRow, column: column + firstColumn) )
-//			}
-//			visibleBlock.append(currentRow)
-//		}
-		
         return visibleBlock
     }
 }

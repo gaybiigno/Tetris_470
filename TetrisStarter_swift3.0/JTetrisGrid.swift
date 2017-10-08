@@ -25,4 +25,9 @@ class JTetrisGrid: TetrisBlockModel {
 		return self.color
 	}
 	
+	func startY() -> CGFloat {
+		return CGFloat(0 - (30) + 1)
+		//return CGFloat(0 - (30 * 2) + 1)
+	}
+	
 }

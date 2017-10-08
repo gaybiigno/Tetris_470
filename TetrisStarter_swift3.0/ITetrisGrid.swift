@@ -25,4 +25,9 @@ class ITetrisGrid: TetrisBlockModel {
 		return self.color
 	}
 	
+	func startY() -> CGFloat {
+		return 1
+		//return CGFloat(0 - (30) + 1)
+	}
+	
 }

@@ -23,7 +23,6 @@ class TetrisViewController: UIViewController {
             block.startDescent()
             return
         }
-
         let location = sender.location(in: tetrisBoard)
         print(location)
         if location.x < tetrisBoard.bounds.width / CGFloat(2.0) {
@@ -44,15 +43,13 @@ class TetrisViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 		
-        tetrisBoard = TetrisBoardView(withFrame: UIScreen.main.bounds, blockSize: blockSize, circleRadius: 1 )
+		tetrisBoard = TetrisBoardView(withFrame: UIScreen.main.bounds, blockSize: blockSize, circleRadius: 1 )
         view.addSubview(tetrisBoard)
-		
 		
 		startGrid()
 		view.addSubview(block)
 		print("Center of block before animation: \(block.center)")
         print("Bounds of main screen is \(UIScreen.main.bounds)")
-		
 		
 		// Setting board bounds to entire screen
 		block.setBoardBounds(boardSize: UIScreen.main.bounds.size)
@@ -65,43 +62,47 @@ class TetrisViewController: UIViewController {
 			let grid = ITetrisGrid()
 			let centerX = Int(UIScreen.main.bounds.size.width) / blockSize * blockSize / 2
 			block = TetrisBlockView(color: grid.getColor(), grid: grid, blockSize: blockSize,
-			                        startY: 100.0, boardCenterX: CGFloat(centerX))
+			                        startY: grid.startY(), boardCenterX: CGFloat(centerX))
 		case 1: // Send for J
 			let grid  = JTetrisGrid()
 			let centerX = Int(UIScreen.main.bounds.size.width) / blockSize * blockSize / 2
 			block = TetrisBlockView(color: grid.getColor(), grid: grid, blockSize: blockSize,
-			                        startY: 100.0, boardCenterX: CGFloat(centerX))
+			                        startY: grid.startY(), boardCenterX: CGFloat(centerX))
 		case 2: // Send for L
 			let grid = LTetrisGrid()
 			let centerX = Int(UIScreen.main.bounds.size.width) / blockSize * blockSize / 2
 			block = TetrisBlockView(color: grid.getColor(), grid: grid, blockSize: blockSize,
-			                        startY: 100.0, boardCenterX: CGFloat(centerX))
+			                        startY: grid.startY(), boardCenterX: CGFloat(centerX))
 		case 3: // Send for O
 			let grid = OTetrisGrid()
 			let centerX = Int(UIScreen.main.bounds.size.width) / blockSize * blockSize / 2
 			block = TetrisBlockView(color: grid.getColor(), grid: grid, blockSize: blockSize,
-			                        startY: 100.0, boardCenterX: CGFloat(centerX))
+			                        startY: grid.startY(), boardCenterX: CGFloat(centerX))
 		case 4: // Send for S
 			let grid = STetrisGrid()
 			let centerX = Int(UIScreen.main.bounds.size.width) / blockSize * blockSize / 2
 			block = TetrisBlockView(color: grid.getColor(), grid: grid, blockSize: blockSize,
-			                        startY: 100.0, boardCenterX: CGFloat(centerX))
+			                        startY: grid.startY(), boardCenterX: CGFloat(centerX))
 		case 5: // Send for T
 			let grid = TTetrisGrid()
 			let centerX = Int(UIScreen.main.bounds.size.width) / blockSize * blockSize / 2
 			block = TetrisBlockView(color: grid.getColor(), grid: grid, blockSize: blockSize,
-			                        startY: 100.0, boardCenterX: CGFloat(centerX))
+			                        startY: grid.startY(), boardCenterX: CGFloat(centerX))
 		case 6: // Send for Z
 			let grid = ZTetrisGrid()
 			let centerX = Int(UIScreen.main.bounds.size.width) / blockSize * blockSize / 2
 			block = TetrisBlockView(color: grid.getColor(), grid: grid, blockSize: blockSize,
-			                        startY: 100.0, boardCenterX: CGFloat(centerX))
+			                        startY: grid.startY(), boardCenterX: CGFloat(centerX))
 		default: // Send for J
 			let grid = JTetrisGrid()
 			let centerX = Int(UIScreen.main.bounds.size.width) / blockSize * blockSize / 2
 			block = TetrisBlockView(color: grid.getColor(), grid: grid, blockSize: blockSize,
-			                        startY: 100.0, boardCenterX: CGFloat(centerX))
+			                        startY: grid.startY(), boardCenterX: CGFloat(centerX))
 		}
+	}
+	
+	func playGame() {
+		
 	}
 
     override func didReceiveMemoryWarning() {

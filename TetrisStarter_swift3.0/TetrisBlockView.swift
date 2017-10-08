@@ -18,6 +18,7 @@ class TetrisBlockView: UIView {
     var blockBounds: CGSize
 	var boardBounds = CGSize()
 	var hasTurned = false
+	var toTravel = CGFloat(0.0)
     
 	init(color: UIColor, grid: TetrisBlockModel, blockSize: Int, startY: CGFloat, boardCenterX: CGFloat) {
         blockColor = color
@@ -27,17 +28,14 @@ class TetrisBlockView: UIView {
         let height = CGFloat(blockSize * grid.blocksHeight())
         blockBounds = CGSize(width: width, height: height)
         var x = boardCenterX
-//        if grid.blocksWide() % 2 != 0 {  // pieces with odd number of sub-blocks will be shifted by blockSize/2 so they start on grid lines.
-//            x -= CGFloat(blockSize) / CGFloat(2.0)
-//        }
 		x -= CGFloat(blockSize) / CGFloat(2.0)
-		let toTravel = CGFloat(blockSize * 18)
+		toTravel = CGFloat(blockSize * 18)
         let frame = CGRect(x: x, y: startY, width: width, height: height)
         super.init(frame: frame)
         backgroundColor = UIColor.clear
         addSubBlocksToView(grid: grid, blockSize: blockSize)
         animator = UIViewPropertyAnimator(duration: 6.0, curve: .linear) { [unowned self] in
-            self.center.y += toTravel
+            self.center.y += self.toTravel
         }
     }
 	
@@ -65,16 +63,15 @@ class TetrisBlockView: UIView {
 	func inVerticalBounds(offset: Int) -> Bool {
 		if 0.0 > (self.center.y - (blockBounds.height/2)) - CGFloat(offset) ||
 			boardBounds.height < (self.center.y + (blockBounds.height/2)) + CGFloat(offset) {
-			print("Max at \(boardBounds.height), now at \((self.center.x + (blockBounds.height/2)) + CGFloat(offset))")
 			return false
 		}
 		return true
 	}
 	
-	func inHorizontalBounds(offset: Int) -> Bool {
+	// Checks if block would move outside vertical bounds
+	func inSidewaysBounds(offset: Int) -> Bool {
 		if 0.0 > (self.center.x - (blockBounds.width/2)) + CGFloat(offset) ||
 			boardBounds.width < (self.center.x + (blockBounds.width/2)) + CGFloat(offset) {
-			print("Max at \(boardBounds.width), now at \((self.center.x + (blockBounds.width/2)) + CGFloat(offset))")
 			return false
 		}
 		return true
@@ -82,8 +79,7 @@ class TetrisBlockView: UIView {
     
 	func moveSideWays(offset: Int) {
 		if animator.state == .active {
-			// Does not move outside bounds horizontally
-			if inHorizontalBounds(offset: offset) {
+			if inSidewaysBounds(offset: offset) {
 				animator.pauseAnimation()
 				UIView.animate(withDuration: 0.8, animations: { [unowned self, offset] in
 					self.center.x += CGFloat(offset)
@@ -113,9 +109,6 @@ class TetrisBlockView: UIView {
 		
 		let aPoint = CGPoint(x: 0.0, y: 0.0)
 		let aPointInSuperView = superview!.convert(aPoint, from: self)
-		// let true_center = self.center
-		print("Choosing reference point \(aPoint) to calculate the x-offset after the rotation.")
-		print("The above reference point translated into the superview (board) is \(aPointInSuperView)")
 		
 		// Set up a new animation for the purpose of rotating the block.
 		angle += rotationAngle
@@ -127,9 +120,7 @@ class TetrisBlockView: UIView {
 		// of some vertical gridline. The gridlines are blockSize apart and logically divide the board.
 		rotation.addCompletion { [unowned self] (_) in
 			let aPointTranslated = self.superview!.convert(aPoint, from: self)
-			print("After rotation, we translate \(aPointInSuperView) in the superview to get \(aPointTranslated).")
 			let diffX = Int(abs(aPointInSuperView.x - aPointTranslated.x)) % self.blockSize
-			print("We are \(diffX) points off from a vertical gridline.")
 			
 			UIView.animate(withDuration: 0.5, animations: {
 				if self.hasTurned {
@@ -141,10 +132,13 @@ class TetrisBlockView: UIView {
 			})
 			self.animator.startAnimation()
 		}
+		
+		
 		rotation.startAnimation()
 	}
     
     func rotateCounterClockwise() {
+		print("START CCW ROTATE")
         if animator.state != .active {
             return
         }
@@ -153,9 +147,11 @@ class TetrisBlockView: UIView {
         blockModel.didRotateCounterClockwise()
         printEdgeValues(edge: Edges.bottom)
         animator.startAnimation()
+		print("END CCW ROTATE")
     }
     
     func rotateClockWise() {
+		print("START CW ROTATE")
         if animator.state != .active {
             return
         }
@@ -163,6 +159,7 @@ class TetrisBlockView: UIView {
         rotateBlock(rotationAngle: CGFloat.pi / 2.0)
         blockModel.didRotateClockwise()
         printEdgeValues(edge: Edges.bottom)
+		print("END CW ROTATE")
     }
 	
 	// Draws the blocks
@@ -178,7 +175,6 @@ class TetrisBlockView: UIView {
                     bView.backgroundColor = blockColor
 					bView.layer.borderWidth = 0.5
 					bView.layer.borderColor = (UIColor.white.cgColor)
-					
                 } else {
                     bView.backgroundColor = UIColor.clear 
                 }

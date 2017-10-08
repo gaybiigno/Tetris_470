@@ -30,16 +30,14 @@ class TetrisBoardView: UIView {
         let numColumns = Int(rect.size.width / CGFloat(gapBetweenCenters))
 
         var circles = [UIBezierPath]()
-        for row in 0 ... numRows { // was <
-            let y = 10 + gapBetweenCenters * CGFloat(row) // lined up w/ 10 +
-            for column in 0 ... numColumns { // was <
+        for row in 0 ... numRows {
+            let y = 30 + gapBetweenCenters * CGFloat(row) // lined up w/ 10 +
+            for column in 0 ... numColumns {
                 let x = gapBetweenCenters * CGFloat(column)
                 let center = CGPoint(x: x, y: y)
 				let aPointInSuperView = superview!.convert(center, from: self)
 				let marker = UIBezierPath(arcCenter: aPointInSuperView, radius: markerRadius,
 				                          startAngle: 0.0, endAngle: CGFloat(2.0 * Double.pi), clockwise: false)
-//                let marker = UIBezierPath(arcCenter: center, radius: markerRadius,
-//                                          startAngle: 0.0, endAngle: CGFloat(2.0 * Double.pi), clockwise: false)
                 circles.append(marker)
             }
         }

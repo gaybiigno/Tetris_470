@@ -24,5 +24,9 @@ class ZTetrisGrid: TetrisBlockModel {
 	func getColor() -> UIColor {
 		return self.color
 	}
+	
+	func startY() -> CGFloat {
+		return CGFloat(0 - (30 * 2) + 1)
+	}
 
 }
