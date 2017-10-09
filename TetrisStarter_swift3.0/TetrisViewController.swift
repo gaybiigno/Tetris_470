@@ -41,7 +41,7 @@ class TetrisViewController: UIViewController {
             block.startDescent()
 			clock = startTimer()
             return
-        }
+		} 
         let location = sender.location(in: tetrisBoard)
         print(location)
 		block.rotateClockWise()

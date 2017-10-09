@@ -25,10 +25,8 @@ class TetrisBlockView: UIView {
 	var boardArray: TetrisBoardArray!
 	var clock = Timer()
 	var isPaused = true
-	let maxRows = 20
+	let maxRows = 24
 	var currentPosition = CGPoint()
-	
-	// HOW TO FIND CURRENT LOCATION: self.layer.presentation()?.frame
 	
 	init(color: UIColor, grid: TetrisBlockModel, blockSize: Int, startY: CGFloat, boardCenterX: CGFloat) {
 		hasFinished = false
@@ -38,7 +36,7 @@ class TetrisBlockView: UIView {
         width = (blockSize * grid.blocksWide())
         height = (blockSize * grid.blocksHeight())
         blockBounds = CGSize(width: CGFloat(width), height: CGFloat(height))
-		toTravel = CGFloat(blockSize * maxRows)
+		toTravel = CGFloat(blockSize * 20)
         var x = boardCenterX
 		x -= CGFloat(blockSize) / CGFloat(2.0)
         let frame = CGRect(x: x, y: startY, width: CGFloat(width), height: CGFloat(height))
@@ -47,8 +45,7 @@ class TetrisBlockView: UIView {
         super.init(frame: frame)
         backgroundColor = UIColor.clear
         addSubBlocksToView(grid: grid, blockSize: blockSize)
-		// 10.0
-		animator = UIViewPropertyAnimator(duration: 5.0, curve: .linear) { [unowned self] in
+		animator = UIViewPropertyAnimator(duration: 4.0, curve: .linear) { [unowned self] in
 			self.center.y += self.toTravel
         }
 		animator.addCompletion{_ in self.endDescent()
@@ -62,37 +59,47 @@ class TetrisBlockView: UIView {
 	
 	// Initializes timer 0.5
 	func startTimer() -> Timer {
-		let timer = Timer.scheduledTimer(timeInterval: 0.25, target: self, selector: #selector(updateTimer), userInfo: nil, repeats: true)
+		let timer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(updateTimer), userInfo: nil, repeats: true)
 		isPaused = false
 		return timer
 	}
 	
 	func updateTimer(_ sender: Timer) {
-		
 		animator.pauseAnimation()
 
 		if !hasFinished {
 			currentPosition.y += 30.0 // Check the next row
+			let temp_frame = self.layer.presentation()?.frame
+//			var add = (Int((temp_frame?.maxY)!) % 30)
+//			if add > 20{
+//				add = 1
+//			}
+			let (row, col) = boardArray.getRowCol(point: CGPoint(x: (temp_frame?.origin.x)!, y: (temp_frame?.maxY)!)) //+ CGFloat(add)))
+			//print("Current block@ \(row), \(col)")
 			
-			let (row, col) = boardArray.getRowCol(point: CGPoint(x: currentPosition.x, y: currentPosition.y))
-			print("Check blocks@ \(row)")
+			if row == boardArray.min {
 			
-			let bottom = blockModel.getEdge(name: Edges.bottom)
-		
-			for i in 0 ..< bottom.count {
-				if row + 1 <= maxRows && col + i < 13 {
-					if (boardArray.hasBlockAt(row: row, column: col + i) && bottom[i] == 0) {
-						print("Found block@ \(row), \(col)")
-						self.animator.stopAnimation(true)
-						self.layer.removeAllAnimations()
-						hasFinished = true
-						endDescent()
+				let bottom = blockModel.getEdge(name: Edges.bottom)
+			
+				for i in 0 ..< bottom.count {
+					if row < maxRows && col + i < 13 {
+						if (boardArray.hasBlockAt(row: row, column: col + i)) { //&& bottom[i] == i) {
+							print("Found block@ \(row), \(col + i)")
+							let blockRow = Int(((temp_frame?.maxY)! - (temp_frame?.origin.y)!) / CGFloat(height))
+							let blockCol = i
+							if (blockModel.hasBlockAt(row: blockRow, column: blockCol)) {
+								self.animator.stopAnimation(true)
+								self.layer.removeAllAnimations()
+								hasFinished = true
+								endDescent()
+								return
+							}
+						}
 					}
 				}
 			}
 			
 			if !hasFinished {
-				//usleep(250000)
 				self.animator.startAnimation()
 			}
 		}
@@ -160,7 +167,7 @@ class TetrisBlockView: UIView {
 			animator.pauseAnimation()
 			if inSidewaysBounds(offset: offset) {
 				currentPosition.x += CGFloat(offset)
-				UIView.animate(withDuration: 0.8, animations: { [unowned self, offset] in
+				UIView.animate(withDuration: 0.0, animations: { [unowned self, offset] in
 					self.center.x += CGFloat(offset)
 					}, completion: { [unowned self] (_) in
 						self.animator.startAnimation()
@@ -191,7 +198,7 @@ class TetrisBlockView: UIView {
 		
 		// Set up a new animation for the purpose of rotating the block.
 		angle += rotationAngle
-		let rotation = UIViewPropertyAnimator(duration: 0.02, curve: .easeInOut) { [unowned self, angle] in
+		let rotation = UIViewPropertyAnimator(duration: 0.0, curve: .easeInOut) { [unowned self, angle] in
 			self.transform = CGAffineTransform(rotationAngle: angle)
 		}
 		
@@ -201,7 +208,7 @@ class TetrisBlockView: UIView {
 			let aPointTranslated = self.superview!.convert(aPoint, from: self)
 			let diffX = Int(abs(aPointInSuperView.x - aPointTranslated.x)) % self.blockSize
 			
-			UIView.animate(withDuration: 0.02, animations: {
+			UIView.animate(withDuration: 0.0, animations: {
 				if self.hasTurned {
 					self.center = CGPoint(x: self.center.x - CGFloat(diffX), y: self.center.y)
 				} else {
@@ -231,10 +238,15 @@ class TetrisBlockView: UIView {
 	
 	// Adds final placement of block to board's array
 	func endDescent() {
+		let temp_frame = self.layer.presentation()?.frame
 		
-		let (row, col) = boardArray.getRowCol(point: CGPoint(x: (currentPosition.x), y: (currentPosition.y - CGFloat(height))))
+		//let (row, col) = boardArray.getRowCol(point: CGPoint(x: (temp_frame?.origin.x)!, y: (temp_frame?.origin.y)!))
+		var add = (Int((temp_frame?.origin.y)!) % 30)
+		if add > 20{
+			add = 1
+		}
+		let (row, col) = boardArray.getRowCol(point: CGPoint(x: (temp_frame?.origin.x)!, y: (temp_frame?.origin.y)! + CGFloat(add)))
 		
-//		let (row, col) = boardArray.getRowCol(point: CGPoint(x: self.frame.minX, y: self.frame.minY))
 		
 		for i in 0 ..< blockModel.blocksHeight() {
 			for j in 0 ..< blockModel.blocksWide() {
@@ -245,7 +257,7 @@ class TetrisBlockView: UIView {
 				}
 			}
 		}
-		boardArray.printArray()
+//		boardArray.printArray()
 	}
 	
 	// Draws the blocks

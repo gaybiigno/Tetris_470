@@ -13,8 +13,8 @@ class OTetrisGrid: TetrisBlockModel {
 	private var color = UIColor.yellow.withAlphaComponent(0.9)
 	
 	let ogrid = [
-		[true, true, false],
-		[true, true, false]
+		[true, true],
+		[true, true]
 	]
 	
 	init() {
@@ -26,7 +26,7 @@ class OTetrisGrid: TetrisBlockModel {
 	}
 	
 	func startY() -> CGFloat {
-		return CGFloat(0 - (30 * 2) + 1)
+		return CGFloat(0)//0 - (30 * 2) + 1)
 	}
 	
 }

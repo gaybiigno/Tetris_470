@@ -38,7 +38,7 @@ struct ArrayWrapper {  // a wrapper around a 2D array so that we can talk about 
 		let x = point.x
 		let y = point.y
 		
-		let row = Int((y - 30.0)/30)
+		let row = Int((y / 30))//- 30.0)/30)
 		let col = Int(x/30)
 		
 		return (row, col)
@@ -49,6 +49,7 @@ struct ArrayWrapper {  // a wrapper around a 2D array so that we can talk about 
 class TetrisBoardArray: NSObject {
 	//private var grid: ArrayWrapper
 	var grid: [[Bool]]
+	var min: Int
 	
 	init(numRows: Int, numCols: Int) {
 		
@@ -61,6 +62,7 @@ class TetrisBoardArray: NSObject {
 			array.append(currentRow)
 		}
 		self.grid = array //ArrayWrapper(array)
+		self.min = grid.count
 		super.init()
 	}
 	
@@ -78,13 +80,20 @@ class TetrisBoardArray: NSObject {
 	
 	func changeValue(row: Int, column: Int) {
 		grid[row][column] = !grid[row][column]
+		if row < min {
+			min = row
+		}
 	}
 	
 	func getRowCol(point: CGPoint) -> (Int, Int) {
-		let row = Int((point.y + 30.0)/30)
+		let row = Int(round(point.y / 30))//+ 30.0)/30)
 		let col = Int(point.x/30)
 		
 		return (row, col)
+	}
+	
+	func getMinCol() -> Int {
+		return min
 	}
 	
 	func printArray() {
@@ -96,17 +105,4 @@ class TetrisBoardArray: NSObject {
 			}
 		}
 	}
-
-//	func numRows() -> Int {
-//		return grid.numRows()
-//	}
-//
-//	func numCols() -> Int {
-//		return grid.numColumns()
-//	}
-	
-	
-	
-	
-	
 }
