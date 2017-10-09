@@ -16,11 +16,30 @@ class TetrisViewController: UIViewController {
 	var boardArray: TetrisBoardArray!
     var inMotion = false
     var paused = false
+	var clock = Timer()
+	
+	func startTimer() -> Timer {
+		let timer = Timer.scheduledTimer(timeInterval: 0.5, target: self, selector: #selector(updateTimer), userInfo: nil, repeats: true)
+		return timer
+	}
+	
+	func updateTimer(_ sender: Timer) {
+		if block.isOver() {
+			startGrid()
+			view.addSubview(block)
+			block.setBoardBounds(boardSize: UIScreen.main.bounds.size)
+			block.getBoardArray(array: boardArray)
+			
+			block.startDescent()
+			clock = startTimer()
+		}
+	}
     
     @IBAction func didTapTheView(_ sender: UITapGestureRecognizer) {
         if !inMotion  {
             inMotion = true
             block.startDescent()
+			clock = startTimer()
             return
         }
         let location = sender.location(in: tetrisBoard)

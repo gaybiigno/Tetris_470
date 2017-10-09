@@ -24,48 +24,70 @@ class TetrisBlockView: UIView {
 	var clock = Timer()
 	var isPaused = true
 	let maxRows = 20
+	var currentPosition = CGPoint()
+	
 	
 	init(color: UIColor, grid: TetrisBlockModel, blockSize: Int, startY: CGFloat, boardCenterX: CGFloat) {
+		hasFinished = false
         blockColor = color
         blockModel = grid
         self.blockSize = blockSize
         let width = CGFloat(blockSize * grid.blocksWide())
         let height = CGFloat(blockSize * grid.blocksHeight())
         blockBounds = CGSize(width: width, height: height)
+		toTravel = CGFloat(blockSize * maxRows)
         var x = boardCenterX
 		x -= CGFloat(blockSize) / CGFloat(2.0)
-		toTravel = CGFloat(blockSize * maxRows)
         let frame = CGRect(x: x, y: startY, width: width, height: height)
+		currentPosition = CGPoint(x: x, y: startY + 30.0)
+		print("Curr position: \(currentPosition)")
         super.init(frame: frame)
         backgroundColor = UIColor.clear
         addSubBlocksToView(grid: grid, blockSize: blockSize)
-		animator = UIViewPropertyAnimator(duration: 10.0, curve: .linear) { [unowned self] in
-            self.center.y += self.toTravel
+		// 10.0
+		animator = UIViewPropertyAnimator(duration: 5.0, curve: .linear) { [unowned self] in
+			self.center.y += self.toTravel
         }
 		animator.addCompletion{_ in self.endDescent()
 			self.hasFinished = true
 		}
     }
 	
-	// Initializes timer
+	func isOver() -> Bool {
+		return hasFinished
+	}
+	
+	// Initializes timer 0.5
 	func startTimer() -> Timer {
-		let timer = Timer.scheduledTimer(timeInterval: 0.5, target: self, selector: #selector(updateTimer), userInfo: nil, repeats: true)
+		let timer = Timer.scheduledTimer(timeInterval: 0.25, target: self, selector: #selector(updateTimer), userInfo: nil, repeats: true)
 		isPaused = false
 		return timer
 	}
 	
 	func updateTimer(_ sender: Timer) {
-		let (row, col) = boardArray.getRowCol(point: CGPoint(x: self.frame.minX, y: self.frame.maxY))
+		self.animator.pauseAnimation()
 		
-		for i in row ..< row + 1 {
-			for j in col - 1 ..< col + 1 {
-				if i == maxRows || j < 0 || j > 12 {
-					continue
+		if !hasFinished {
+			currentPosition.y += 30.0 // Check the next row
+			
+			let (row, col) = boardArray.getRowCol(point: CGPoint(x: currentPosition.x, y: currentPosition.y))
+			
+			let bottom = blockModel.getEdge(name: Edges.bottom)
+		
+			for i in 0 ..< bottom.count {
+				if row + 1 <= maxRows && col + i < 13 {
+					if (boardArray.hasBlockAt(row: row + 1, column: col + i) && bottom[i] == 0) {
+						print("Found block@ \(row), \(col)")
+						self.animator.stopAnimation(true)
+						self.layer.removeAllAnimations()
+						endDescent()
+						hasFinished = true
+					}
 				}
-				
-				if boardArray.hasBlockAt(row: row + i, column: col + j) {
-					print("STOP")
-				}
+			}
+			
+			if !hasFinished {
+				animator.startAnimation()
 			}
 		}
 	}
@@ -130,6 +152,7 @@ class TetrisBlockView: UIView {
 	func moveSideWays(offset: Int) {
 		if animator.state == .active {
 			if inSidewaysBounds(offset: offset) {
+				currentPosition.x += CGFloat(offset)
 				animator.pauseAnimation()
 				UIView.animate(withDuration: 0.8, animations: { [unowned self, offset] in
 					self.center.x += CGFloat(offset)
@@ -155,7 +178,6 @@ class TetrisBlockView: UIView {
     }
     
 	func rotateBlock(rotationAngle: CGFloat) {
-		
 		animator.pauseAnimation()
 		
 		let aPoint = CGPoint(x: 0.0, y: 0.0)
