@@ -13,6 +13,8 @@ class TetrisBlockView: UIView {
     let blockColor: UIColor
     let blockModel: TetrisBlockModel
     let blockSize: Int
+	let width: Int
+	let height: Int
     var animator: UIViewPropertyAnimator!
     var angle = CGFloat(0.0)
     var blockBounds: CGSize
@@ -32,14 +34,14 @@ class TetrisBlockView: UIView {
         blockColor = color
         blockModel = grid
         self.blockSize = blockSize
-        let width = CGFloat(blockSize * grid.blocksWide())
-        let height = CGFloat(blockSize * grid.blocksHeight())
-        blockBounds = CGSize(width: width, height: height)
+        width = (blockSize * grid.blocksWide())
+        height = (blockSize * grid.blocksHeight())
+        blockBounds = CGSize(width: CGFloat(width), height: CGFloat(height))
 		toTravel = CGFloat(blockSize * maxRows)
         var x = boardCenterX
 		x -= CGFloat(blockSize) / CGFloat(2.0)
-        let frame = CGRect(x: x, y: startY, width: width, height: height)
-		currentPosition = CGPoint(x: x, y: startY + 30.0)
+        let frame = CGRect(x: x, y: startY, width: CGFloat(width), height: CGFloat(height))
+		currentPosition = CGPoint(x: (x - CGFloat(width/2)), y: startY + 30.0)
 		print("Curr position: \(currentPosition)")
         super.init(frame: frame)
         backgroundColor = UIColor.clear
@@ -65,29 +67,32 @@ class TetrisBlockView: UIView {
 	}
 	
 	func updateTimer(_ sender: Timer) {
-		self.animator.pauseAnimation()
 		
+		animator.pauseAnimation()
+
 		if !hasFinished {
 			currentPosition.y += 30.0 // Check the next row
 			
 			let (row, col) = boardArray.getRowCol(point: CGPoint(x: currentPosition.x, y: currentPosition.y))
+			print("Check blocks@ \(row)")
 			
 			let bottom = blockModel.getEdge(name: Edges.bottom)
 		
 			for i in 0 ..< bottom.count {
 				if row + 1 <= maxRows && col + i < 13 {
-					if (boardArray.hasBlockAt(row: row + 1, column: col + i) && bottom[i] == 0) {
+					if (boardArray.hasBlockAt(row: row, column: col + i) && bottom[i] == 0) {
 						print("Found block@ \(row), \(col)")
 						self.animator.stopAnimation(true)
 						self.layer.removeAllAnimations()
-						endDescent()
 						hasFinished = true
+						endDescent()
 					}
 				}
 			}
 			
 			if !hasFinished {
-				animator.startAnimation()
+				//usleep(250000)
+				self.animator.startAnimation()
 			}
 		}
 	}
@@ -151,9 +156,9 @@ class TetrisBlockView: UIView {
     
 	func moveSideWays(offset: Int) {
 		if animator.state == .active {
+			animator.pauseAnimation()
 			if inSidewaysBounds(offset: offset) {
 				currentPosition.x += CGFloat(offset)
-				animator.pauseAnimation()
 				UIView.animate(withDuration: 0.8, animations: { [unowned self, offset] in
 					self.center.x += CGFloat(offset)
 					}, completion: { [unowned self] (_) in
@@ -185,7 +190,7 @@ class TetrisBlockView: UIView {
 		
 		// Set up a new animation for the purpose of rotating the block.
 		angle += rotationAngle
-		let rotation = UIViewPropertyAnimator(duration: 0.2, curve: .easeInOut) { [unowned self, angle] in
+		let rotation = UIViewPropertyAnimator(duration: 0.02, curve: .easeInOut) { [unowned self, angle] in
 			self.transform = CGAffineTransform(rotationAngle: angle)
 		}
 		
@@ -195,12 +200,15 @@ class TetrisBlockView: UIView {
 			let aPointTranslated = self.superview!.convert(aPoint, from: self)
 			let diffX = Int(abs(aPointInSuperView.x - aPointTranslated.x)) % self.blockSize
 			
-			UIView.animate(withDuration: 0.5, animations: {
+			UIView.animate(withDuration: 0.02, animations: {
+				
+				
 				if self.hasTurned {
 					self.center = CGPoint(x: self.center.x - CGFloat(diffX), y: self.center.y)
 				} else {
 					self.center = CGPoint(x: self.center.x + CGFloat(diffX), y: self.center.y)
 				}
+				self.currentPosition = CGPoint(x: self.center.x - CGFloat(self.width/2), y: self.center.y + CGFloat(self.height/2))
 				self.hasTurned = !self.hasTurned
 			})
 			self.animator.startAnimation()
@@ -223,7 +231,10 @@ class TetrisBlockView: UIView {
 	
 	// Adds final placement of block to board's array
 	func endDescent() {
-		let (row, col) = boardArray.getRowCol(point: CGPoint(x: self.frame.minX, y: self.frame.minY))
+		
+		let (row, col) = boardArray.getRowCol(point: CGPoint(x: (currentPosition.x), y: (currentPosition.y - CGFloat(height))))
+		
+//		let (row, col) = boardArray.getRowCol(point: CGPoint(x: self.frame.minX, y: self.frame.minY))
 		
 		for i in 0 ..< blockModel.blocksHeight() {
 			for j in 0 ..< blockModel.blocksWide() {
