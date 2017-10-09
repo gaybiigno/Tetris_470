@@ -28,6 +28,7 @@ class TetrisBlockView: UIView {
 	let maxRows = 20
 	var currentPosition = CGPoint()
 	
+	// HOW TO FIND CURRENT LOCATION: self.layer.presentation()?.frame
 	
 	init(color: UIColor, grid: TetrisBlockModel, blockSize: Int, startY: CGFloat, boardCenterX: CGFloat) {
 		hasFinished = false
@@ -201,8 +202,6 @@ class TetrisBlockView: UIView {
 			let diffX = Int(abs(aPointInSuperView.x - aPointTranslated.x)) % self.blockSize
 			
 			UIView.animate(withDuration: 0.02, animations: {
-				
-				
 				if self.hasTurned {
 					self.center = CGPoint(x: self.center.x - CGFloat(diffX), y: self.center.y)
 				} else {
@@ -214,6 +213,7 @@ class TetrisBlockView: UIView {
 			self.animator.startAnimation()
 		}
 		rotation.startAnimation()
+		
 	}
     
     func rotateClockWise() {
