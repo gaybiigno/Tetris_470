@@ -23,6 +23,7 @@
 		3EB94E391F82DDD500003D4A /* TetrisBlockEdge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EB94E341F82DDD500003D4A /* TetrisBlockEdge.swift */; };
 		3EB94E3B1F82DE0A00003D4A /* TetrisViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EB94E3A1F82DE0A00003D4A /* TetrisViewController.swift */; };
 		5A3677181F8AA04B00825EFE /* TetrisBoardArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A3677171F8AA04B00825EFE /* TetrisBoardArray.swift */; };
+		5A36771A1F8C4CCE00825EFE /* Screen Shot 2017-10-09 at 5.32.28 PM.png in Resources */ = {isa = PBXBuildFile; fileRef = 5A3677191F8C4CCE00825EFE /* Screen Shot 2017-10-09 at 5.32.28 PM.png */; };
 		5A4491531F83008700487426 /* TTetrisGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A4491521F83008700487426 /* TTetrisGrid.swift */; };
 		5A4491551F83015A00487426 /* STetrisGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A4491541F83015A00487426 /* STetrisGrid.swift */; };
 		5A4491571F8302AB00487426 /* LTetrisGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A4491561F8302AB00487426 /* LTetrisGrid.swift */; };
@@ -70,6 +71,7 @@
 		3EB94E341F82DDD500003D4A /* TetrisBlockEdge.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TetrisBlockEdge.swift; sourceTree = "<group>"; };
 		3EB94E3A1F82DE0A00003D4A /* TetrisViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TetrisViewController.swift; sourceTree = "<group>"; };
 		5A3677171F8AA04B00825EFE /* TetrisBoardArray.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TetrisBoardArray.swift; sourceTree = "<group>"; };
+		5A3677191F8C4CCE00825EFE /* Screen Shot 2017-10-09 at 5.32.28 PM.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Screen Shot 2017-10-09 at 5.32.28 PM.png"; path = "../../../Desktop/Screen Shot 2017-10-09 at 5.32.28 PM.png"; sourceTree = "<group>"; };
 		5A4491521F83008700487426 /* TTetrisGrid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TTetrisGrid.swift; sourceTree = "<group>"; };
 		5A4491541F83015A00487426 /* STetrisGrid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = STetrisGrid.swift; sourceTree = "<group>"; };
 		5A4491561F8302AB00487426 /* LTetrisGrid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LTetrisGrid.swift; sourceTree = "<group>"; };
@@ -168,6 +170,7 @@
 		3EB94E291F82DD8900003D4A /* TetrisModel */ = {
 			isa = PBXGroup;
 			children = (
+				5A3677191F8C4CCE00825EFE /* Screen Shot 2017-10-09 at 5.32.28 PM.png */,
 				3EB94E301F82DDD500003D4A /* TetrisBlockModel.swift */,
 				5AA517F11F84353D002A4652 /* ITetrisGrid.swift */,
 				3EB94E311F82DDD500003D4A /* JTetrisGrid.swift */,
@@ -291,6 +294,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				3EB94E051F82D6E600003D4A /* LaunchScreen.storyboard in Resources */,
+				5A36771A1F8C4CCE00825EFE /* Screen Shot 2017-10-09 at 5.32.28 PM.png in Resources */,
 				3EB94E021F82D6E600003D4A /* Assets.xcassets in Resources */,
 				3EB94E001F82D6E600003D4A /* Main.storyboard in Resources */,
 			);

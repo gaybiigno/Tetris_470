@@ -44,16 +44,18 @@ class TetrisBlockModel: NSObject {
 		return edgeAttributes(edge: name).edgeOffsets()
 	}
 	
+	func getGrid() -> [[Bool]] {
+		return grid
+	}
+	
     func didRotateClockwise() {
         let lastIdx = blockEdges.count - 1
-        printEdges()
+        //printEdges()
 		print()
-		
         blockEdges = [blockEdges[lastIdx]] + blockEdges[0 ... lastIdx - 1]
         blockEdges[0].reverseOffsets()
         blockEdges[2].reverseOffsets()
-        printEdges()
-		
+        //printEdges()
 		rotateGrid()
     }
 	
@@ -97,11 +99,13 @@ class TetrisBlockModel: NSObject {
     }
     
     func blocksWide() -> Int {
-        return numColumns()
+        //return numColumns()
+		return grid[0].count
     }
     
     func blocksHeight() -> Int {
-        return numRows()
+        //return numRows()
+		return grid.count
     }
     
     func smallestVisibleGrid() -> [[Bool]]? {
@@ -133,7 +137,7 @@ private extension TetrisBlockModel {
         // Finds the smallest two dimentional array that contains all
         // squares of the Tetris grid.
         var firstRow = 0
-		print("ROWS: \(numRows()), COLS: \(numColumns())")
+		//print("ROWS: \(numRows()), COLS: \(numColumns())")
         while firstRow < numRows() && !rowHasAVisibleBlock(row: firstRow) {
             firstRow += 1
         }
@@ -160,9 +164,7 @@ private extension TetrisBlockModel {
                 lastVisibleRow = row
             }
         }
-		
 		let numVisibleRows = (lastVisibleRow == firstRow + 1) ? lastVisibleRow : (lastVisibleRow - firstRow + 1)
-		
         let numVisibleColumns = lastVisibleColumn - firstColumn + 1
         var visibleBlock = [[Bool]]()
 		for row in 0 ... numVisibleRows {

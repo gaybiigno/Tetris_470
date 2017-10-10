@@ -13,8 +13,8 @@ class LTetrisGrid: TetrisBlockModel {
 	private var color = UIColor.init(red: 0.8, green: 0.3, blue: 0.1, alpha: 0.9)
 
 	let lgrid = [
-		[true, true, true],
-		[true, false, false]
+		[false, false, true],
+		[true, true, true]
 	]
 	
 	init() {
