@@ -34,7 +34,7 @@ struct GridWrapper {  // a wrapper around a 2D array so that we can talk about t
     }
     
     func hasBlockAt(row: Int, column: Int) -> Bool {
-        return row < numRows() && column < numColumns() && grid[row][column]
+		return row < numRows() && column < numColumns() && grid[row][column]
     }
     
 }
