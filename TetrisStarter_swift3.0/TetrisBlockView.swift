@@ -27,6 +27,7 @@ class TetrisBlockView: UIView {
 	var isPaused = true
 	var endRow = 0
 	let maxRows = 24
+	let maxCols = 13
 	
 	init(color: UIColor, grid: TetrisBlockModel, blockSize: Int, startY: CGFloat, boardCenterX: CGFloat) {
 		hasFinished = false
@@ -46,7 +47,9 @@ class TetrisBlockView: UIView {
 		animator = UIViewPropertyAnimator(duration: 4.0, curve: .linear) { [unowned self] in
 			self.center.y += self.toTravel
         }
-		animator.addCompletion{_ in self.endDescent()
+		animator.addCompletion{_ in
+			self.endRow = Int((self.center.y + CGFloat(self.height/2)) / CGFloat(self.blockSize))
+			self.endDescent()
 			self.hasFinished = true
 		}
     }
@@ -64,23 +67,22 @@ class TetrisBlockView: UIView {
 	
 	func updateTimer(_ sender: Timer) {
 		animator.pauseAnimation()
-		//pauseAnimation()
 		if !hasFinished {
 			let temp_frame = self.layer.presentation()?.frame
 			let (row, col) = boardArray.getRowCol(point: CGPoint(x: (temp_frame?.origin.x)!, y: (temp_frame?.maxY)!))
 				let bottom = blockModel.getEdge(name: Edges.bottom)
 			
 				for i in 0 ..< bottom.count {
-					if row + i < maxRows && col < 13 {
-						if (boardArray.hasBlockAt(row: row + i, column: col)) {
+					if row + 1 < maxRows && col + i < maxCols {
+						if (boardArray.hasBlockAt(row: row + 1, column: col + i)) {
 							let blockRow = Int(((temp_frame?.maxY)! - (temp_frame?.origin.y)!) / CGFloat(height))
 							let blockCol = i
-							print("Found block@ \(row + i), \(col); block is \(blockRow), \(blockCol)")
+							print("Found block@ \(row + 1), \(col + i); block is \(blockRow), \(blockCol)")
 							if (blockModel.hasBlockAt(row: blockRow, column: blockCol)) {
 								self.animator.stopAnimation(true)
 								self.layer.removeAllAnimations()
 								hasFinished = true
-								endRow = row
+								endRow = row + 1
 								endDescent()
 								return
 							}
@@ -89,7 +91,6 @@ class TetrisBlockView: UIView {
 			}
 			if !hasFinished {
 				self.animator.startAnimation()
-				//startAnimation()
 			}
 		}
 	}
@@ -115,7 +116,7 @@ class TetrisBlockView: UIView {
     func startDescent() {
         animator.startAnimation()
 		clock = startTimer()
-        blockModel.printEdges()
+        //blockModel.printEdges()
     }
     
     func pauseAnimation() {
@@ -227,25 +228,15 @@ class TetrisBlockView: UIView {
 	func endDescent() {
 		if animator.state == .active {
 			animator.pauseAnimation()
+			self.animator.stopAnimation(true)
+			self.layer.removeAllAnimations()
 		}
+		
 		let temp_frame = self.layer.presentation()?.frame
-		var add = Int((temp_frame?.maxY)!) % 30 //((Int((temp_frame?.origin.y)!) + height) % 30)
-		
-		let (row, col): (Int, Int)
-		let final: CGFloat
-		
-		if add > 15 {
-			add = 30 - add
-			(row, col) = boardArray.getRowCol(point: CGPoint(x: (temp_frame?.origin.x)!, y: CGFloat(Int((temp_frame?.origin.y)! + CGFloat(add)) + height)))
-			final = CGFloat(Int((temp_frame?.maxY)!) + add) //CGFloat(Int((temp_frame?.origin.y)! + CGFloat(add)) + height)//- (height / 2) )
-			print("\(CGFloat(Int((temp_frame?.origin.y)! + CGFloat(add)) + height )) because of \(Int((temp_frame?.origin.y)!) + height)+ \(add)")
-		} else {
-				(row, col) = boardArray.getRowCol(point: CGPoint(x: (temp_frame?.origin.x)!, y: CGFloat(Int((temp_frame?.origin.y)! - CGFloat(add)) + height )))
-			final = CGFloat(Int((temp_frame?.maxY)!) - add) //CGFloat(Int((temp_frame?.origin.y)! - CGFloat(add)) + height) // - (height / 2) )
-			print("\(CGFloat(Int((temp_frame?.origin.y)! - CGFloat(add)) + height )) because of \(Int((temp_frame?.origin.y)!) + height)+ \(add)")
-		}
-		
-		//print("\(CGFloat(Int((temp_frame?.origin.y)! + CGFloat(add)) + height )) because of \(Int((temp_frame?.origin.y)!) + height)+ \(add)")
+		let row = endRow - (height / blockSize)
+		let col = Int((temp_frame?.origin.x)! / CGFloat(blockSize))
+		endRow = 0
+		self.center.y = CGFloat(row * blockSize) // - (height / 2))
 		
 		for i in 0 ..< blockModel.blocksHeight() {
 			for j in 0 ..< blockModel.blocksWide() {
@@ -257,12 +248,6 @@ class TetrisBlockView: UIView {
 			}
 		}
 		
-		if animator.state == .active {
-			self.animator.stopAnimation(true)
-			self.layer.removeAllAnimations()
-			//animator.pauseAnimation()
-		}
-		self.center.y = final - CGFloat(height / 2)
 	}
 	
 	// Draws the blocks

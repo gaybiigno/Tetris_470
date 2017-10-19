@@ -77,13 +77,13 @@ class TetrisViewController: UIViewController {
     }
 	
 	func startGrid() {
-		let number = Int(arc4random_uniform(8))
+		let number = Int(arc4random_uniform(7)) + 1
 		switch (number) {
-		case 0: // Send for I
-			let grid = ITetrisGrid()
-			let centerX = Int(UIScreen.main.bounds.size.width) / blockSize * blockSize / 2
-			block = TetrisBlockView(color: grid.getColor(), grid: grid, blockSize: blockSize,
-			                        startY: grid.startY(), boardCenterX: CGFloat(centerX))
+//		case 0: // Send for I
+//			let grid = ITetrisGrid()
+//			let centerX = Int(UIScreen.main.bounds.size.width) / blockSize * blockSize / 2
+//			block = TetrisBlockView(color: grid.getColor(), grid: grid, blockSize: blockSize,
+//			                        startY: grid.startY(), boardCenterX: CGFloat(centerX))
 		case 1: // Send for J
 			let grid  = JTetrisGrid()
 			let centerX = Int(UIScreen.main.bounds.size.width) / blockSize * blockSize / 2
