@@ -63,8 +63,8 @@ class TetrisViewController: UIViewController {
 		
 		startGrid()
 		view.addSubview(block)
-		print("Center of block before animation: \(block.center)")
-        print("Bounds of main screen is \(UIScreen.main.bounds)")
+//		print("Center of block before animation: \(block.center)")
+//        print("Bounds of main screen is \(UIScreen.main.bounds)")
 		
 		// Setting board bounds to entire screen
 		block.setBoardBounds(boardSize: UIScreen.main.bounds.size)

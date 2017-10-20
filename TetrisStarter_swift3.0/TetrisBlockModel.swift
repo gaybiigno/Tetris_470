@@ -171,7 +171,7 @@ private extension TetrisBlockModel {
 			var currentRow = [Bool]()
 			for column in 0 ..< numVisibleColumns {
 				//if row + firstRow < numVisibleRows {
-					currentRow.append( hasBlockAt(row: row + firstRow, column: column + firstColumn) )
+				currentRow.append( hasBlockAt(row: row + firstRow, column: column + firstColumn) )
 				//}
 			}
 			visibleBlock.append(currentRow)

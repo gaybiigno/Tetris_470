@@ -66,7 +66,6 @@ class TetrisBlockEdge: NSObject {
     
     func edgeOffsets() -> [Int] {
         return offsets
-//        return direction == OffsetTraversal.forward ? offsets : reverseOffsets
     }
     
 }

@@ -86,8 +86,8 @@ class TetrisBoardArray: NSObject {
 	}
 	
 	func getRowCol(point: CGPoint) -> (Int, Int) {
-		let row = Int(round(point.y / 30)) //+ 30.0)/30)
-		let col = Int(point.x/30)
+		let row = Int(round( point.y / 30 ))
+		let col = Int( point.x / 30 )
 		
 		return (row, col)
 	}
