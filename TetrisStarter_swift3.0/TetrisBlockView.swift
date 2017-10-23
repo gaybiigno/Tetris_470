@@ -37,7 +37,7 @@ class TetrisBlockView: UIView {
         width = (blockSize * grid.blocksWide())
         height = (blockSize * grid.blocksHeight())
         blockBounds = CGSize(width: CGFloat(width), height: CGFloat(height))
-		toTravel = CGFloat(blockSize * 20)
+		toTravel = CGFloat(blockSize * 19) //20)
         var x = boardCenterX
 		x -= CGFloat(blockSize) / CGFloat(2.0)
         let frame = CGRect(x: x, y: startY, width: CGFloat(width), height: CGFloat(height))
