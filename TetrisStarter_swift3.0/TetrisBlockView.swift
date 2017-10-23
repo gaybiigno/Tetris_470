@@ -30,6 +30,7 @@ class TetrisBlockView: UIView {
 	let maxCols = 13
 	
 	init(color: UIColor, grid: TetrisBlockModel, blockSize: Int, startY: CGFloat, boardCenterX: CGFloat) {
+		hasTurned = false
 		hasFinished = false
         blockColor = color
         blockModel = grid
@@ -90,6 +91,7 @@ class TetrisBlockView: UIView {
 						let blockRow = 0
 						let blockCol = col_add
 						if (blockModel.hasBlockAt(row: blockRow, column: blockCol)) {
+							clock.invalidate()
 							//print("#2 Found block@ \(row), \(col + col_add); block is \(blockRow), \(blockCol)")
 							self.animator.stopAnimation(true)
 							self.layer.removeAllAnimations()
@@ -242,7 +244,9 @@ class TetrisBlockView: UIView {
 			animator.pauseAnimation()
 			self.animator.stopAnimation(true)
 			self.layer.removeAllAnimations()
-			clock.invalidate()
+			if clock.isValid {
+				clock.invalidate()
+			}
 		}
 		let temp_frame = self.layer.presentation()?.frame
 		let row = endRow - (height / blockSize)
@@ -293,6 +297,13 @@ class TetrisBlockView: UIView {
             topLeftY += blockSize
         }
     }
+	
+	func reset() {
+		for sub in subviews {
+			sub.removeFromSuperview()
+		}
+		toTravel = CGFloat(0.0)
+	}
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
