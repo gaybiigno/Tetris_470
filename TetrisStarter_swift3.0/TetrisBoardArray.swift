@@ -8,51 +8,12 @@
 
 import UIKit
 
-struct ArrayWrapper {  // a wrapper around a 2D array so that we can talk about the
-	// the number of columns by use of numColumns() instead of
-	// grid[0].count
-	
-	var grid: [[Bool]]
-	
-	init(_ grid: [[Bool]]) {
-		self.grid = grid
-	}
-	
-	func numColumns() -> Int {
-		return grid[0].count
-	}
-	
-	func numRows() -> Int {
-		return grid.count
-	}
-	
-	mutating func setBlock(row: Int, column: Int) {
-		grid[row][column] = !grid[row][column]
-	}
-	
-	func hasBlockAt(row: Int, column: Int) -> Bool {
-		return row < numRows() && column < numColumns() && grid[row][column]
-	}
-	
-	func getRowCol(point: CGPoint) -> (Int, Int) {
-		let x = point.x
-		let y = point.y
-		
-		let row = Int((y / 30)) //- 30.0)/30)
-		let col = Int(x/30)
-		
-		return (row, col)
-	}
-	
-}
-
 class TetrisBoardArray: NSObject {
 	//private var grid: ArrayWrapper
 	var grid: [[Bool]]
 	var min: Int
 	
 	init(numRows: Int, numCols: Int) {
-		
 		var array = [[Bool]]()
 		for _ in 0 ..< numRows {
 			var currentRow = [Bool]()
@@ -64,6 +25,8 @@ class TetrisBoardArray: NSObject {
 		self.grid = array //ArrayWrapper(array)
 		self.min = grid.count
 		super.init()
+		
+		print("ARRAY ROWS: \(grid.count), COLS: \(grid[0].count)")
 	}
 	
 	func numColumns() -> Int {
@@ -75,11 +38,12 @@ class TetrisBoardArray: NSObject {
 	}
 	
 	func hasBlockAt(row: Int, column: Int) -> Bool {
-		return row < numRows() && column < numColumns() && grid[row][column]
+		return row < numRows() && column < numColumns() && self.grid[row][column]
 	}
 	
 	func changeValue(row: Int, column: Int) {
-		grid[row][column] = !grid[row][column]
+		self.grid[row][column] = !self.grid[row][column]
+		print("value at \(row), \(column) is \(grid[row][column])")
 		if row < min {
 			min = row
 		}
@@ -88,11 +52,10 @@ class TetrisBoardArray: NSObject {
 	func getRowCol(point: CGPoint) -> (Int, Int) {
 		let row = Int(round( point.y / 30 ))
 		let col = Int( point.x / 30 )
-		
 		return (row, col)
 	}
 	
-	func getMinCol() -> Int {
+	func getMinRow() -> Int {
 		return min
 	}
 	
@@ -104,5 +67,27 @@ class TetrisBoardArray: NSObject {
 				}
 			}
 		}
+	}
+	
+	// Returns true if entire row is full
+	func checkRow(row: Int) -> Bool {
+		for col in 0 ..< numColumns() {
+			if !grid[row][col] {
+				return false
+			}
+			// If cell is true, reset to false
+			grid[row][col] = false
+		}
+		
+		// Reset minimum
+		if row == min {
+			for r in min + 1 ..< numRows() {
+				if grid[r].contains(true) {
+					min = r
+					break
+				}
+			}
+		}
+		return true
 	}
 }

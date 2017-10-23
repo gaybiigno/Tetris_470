@@ -73,7 +73,6 @@
 		5A4491521F83008700487426 /* TTetrisGrid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TTetrisGrid.swift; sourceTree = "<group>"; };
 		5A4491541F83015A00487426 /* STetrisGrid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = STetrisGrid.swift; sourceTree = "<group>"; };
 		5A4491561F8302AB00487426 /* LTetrisGrid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LTetrisGrid.swift; sourceTree = "<group>"; };
-		5A57C5601F99597500B18CAE /* 79daa4.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = 79daa4.png; path = ../../../Desktop/79daa4.png; sourceTree = "<group>"; };
 		5AA517EF1F84350D002A4652 /* OTetrisGrid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OTetrisGrid.swift; sourceTree = "<group>"; };
 		5AA517F11F84353D002A4652 /* ITetrisGrid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ITetrisGrid.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -169,7 +168,6 @@
 		3EB94E291F82DD8900003D4A /* TetrisModel */ = {
 			isa = PBXGroup;
 			children = (
-				5A57C5601F99597500B18CAE /* 79daa4.png */,
 				3EB94E301F82DDD500003D4A /* TetrisBlockModel.swift */,
 				5AA517F11F84353D002A4652 /* ITetrisGrid.swift */,
 				3EB94E311F82DDD500003D4A /* JTetrisGrid.swift */,

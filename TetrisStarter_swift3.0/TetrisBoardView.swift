@@ -25,7 +25,8 @@ class TetrisBoardView: UIView {
     // An empty implementation adversely affects performance during animation.
     override func draw(_ rect: CGRect) {
         super.draw(rect)
-        let numRows = Int(rect.size.height / CGFloat(gapBetweenCenters))
+        //let numRows = Int(rect.size.height / CGFloat(gapBetweenCenters))
+		let numRows = 20
         let numColumns = Int(rect.size.width / CGFloat(gapBetweenCenters))
 		print("BOARD ROWS: \(numRows), COLS: \(numColumns)")
 
