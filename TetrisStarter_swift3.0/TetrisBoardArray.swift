@@ -43,7 +43,7 @@ class TetrisBoardArray: NSObject {
 	
 	func changeValue(row: Int, column: Int) {
 		self.grid[row][column] = !self.grid[row][column]
-		print("value at \(row), \(column) is \(grid[row][column])")
+		// print("value at \(row), \(column) is \(grid[row][column])")
 		if row < min {
 			min = row
 		}

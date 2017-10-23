@@ -21,6 +21,7 @@ class TetrisBlockModel: NSObject {
     private let edges: [Edges] = [.bottom, .left, .top, .right]  // Any order will work
     private let bottomEdgeIdx = 0
     private var currentDirection: OffsetTraversal
+	private var hasRotated = false
 
     init(tetrisGrid: [[Bool]]) {
         grid = tetrisGrid
@@ -63,10 +64,11 @@ class TetrisBlockModel: NSObject {
 		var temp = [[Bool]](repeatElement([Bool](repeatElement(false, count: numRows())), count: numColumns()))
 		for row in 0 ..< numColumns() {
 			for cols in 0 ..< numRows() {
-				temp[row][cols] = grid[numRows() - cols - 1][row]
+				temp[row][cols] = self.grid[numRows() - cols - 1][row]
 			}
 		}
-		grid = temp
+		self.grid = temp
+		self.hasRotated = !self.hasRotated
 	}
     
     func edgeAttributes(edge: Edges) -> TetrisBlockEdge {
@@ -86,7 +88,10 @@ class TetrisBlockModel: NSObject {
     }
     
     func hasBlockAt(row: Int, column: Int) -> Bool {
-        return grid[row][column]
+//		if self.hasRotated {
+//			return self.grid[column][row]
+//		}
+        return self.grid[row][column]
     }
     
     func numRows() -> Int {
@@ -100,12 +105,14 @@ class TetrisBlockModel: NSObject {
     
     func blocksWide() -> Int {
         //return numColumns()
-		return grid[0].count
+		return self.grid[0].count
+		//return (smallestVisibleGrid()![0].count < grid[0].count) ? smallestVisibleGrid()![0].count : grid[0].count
     }
     
     func blocksHeight() -> Int {
         //return numRows()
-		return grid.count
+		return self.grid.count
+		//return ((smallestVisibleGrid()?.count)! < grid.count) ? (smallestVisibleGrid()?.count)! : grid.count
     }
     
     func smallestVisibleGrid() -> [[Bool]]? {
@@ -136,13 +143,22 @@ private extension TetrisBlockModel {
     func smallestSpanningGrid() -> [[Bool]]? {
         // Finds the smallest two dimentional array that contains all
         // squares of the Tetris grid.
+		if numRows() == 1 { // IF its itetris grid
+			print("Got itetris grid!")
+			var visibleBlock = [[Bool]]()
+			var currentRow = [Bool]()
+			for _ in 0 ..< 4 {
+				currentRow.append( true )
+			}
+			visibleBlock.append(currentRow)
+			return visibleBlock
+		}
         var firstRow = 0
-		//print("ROWS: \(numRows()), COLS: \(numColumns())")
         while firstRow < numRows() && !rowHasAVisibleBlock(row: firstRow) {
             firstRow += 1
         }
         if firstRow == numRows() {
-            return nil
+			 return nil
         }
         var firstColumn = 0
         while firstColumn < numColumns() && !columnHasAVisibleBlock(column: firstColumn) {
@@ -170,9 +186,7 @@ private extension TetrisBlockModel {
 		for row in 0 ... numVisibleRows {
 			var currentRow = [Bool]()
 			for column in 0 ..< numVisibleColumns {
-				//if row + firstRow < numVisibleRows {
 				currentRow.append( hasBlockAt(row: row + firstRow, column: column + firstColumn) )
-				//}
 			}
 			visibleBlock.append(currentRow)
 		}

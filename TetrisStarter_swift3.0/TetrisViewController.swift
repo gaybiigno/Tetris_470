@@ -31,8 +31,7 @@ class TetrisViewController: UIViewController {
 	func updateTimer(_ sender: Timer) {
 		if currBlock.isOver() {
 			// If the game is over
-			if currBlock.center == startCenter {
-				print("SHOULD END")
+			if currBlock.center.y == startCenter.y {
 				clock.invalidate()
 				for sub in view.subviews {
 					sub.layer.opacity = 0.5
@@ -41,13 +40,14 @@ class TetrisViewController: UIViewController {
 				endScore.isHidden = false
 				endScore.isEnabled = true
 				endScore.backgroundColor = UIColor.white
-				endScore.setTitle(String(scoreCount), for: .normal)
+				let stringScore = "GAME OVER! Score: \(scoreCount)"
+				endScore.setTitle(stringScore, for: .normal)
 				endScore.setTitleColor(UIColor.darkGray, for: .normal)
 				endScore.alpha = 1
 				endScore.layer.cornerRadius = 5.0
 				endScore.addTarget(self, action: #selector(didTapRestart(_:)), for: .touchUpInside)
 				view.addSubview(endScore)
-			} else {
+			} else {  // Otherwise, get next block
 				nextBlock.removeFromSuperview()
 				nextBlock.center = startCenter
 				currBlock = nextBlock
@@ -78,8 +78,8 @@ class TetrisViewController: UIViewController {
 			clock = startTimer()
             return
 		} 
-        let location = sender.location(in: tetrisBoard)
-        print(location)
+        //let location = sender.location(in: tetrisBoard)
+        //print(location)
 		currBlock.rotateClockWise()
      }
     
@@ -93,17 +93,17 @@ class TetrisViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-		
 		newGame()
     }
 	
+	// Sets up entire board with default values
 	func newGame() {
 		scoreCount = 0
 		
 		endScore.isHidden = true
 		endScore.isEnabled = false
 		
-		tetrisBoard = TetrisBoardView(withFrame: UIScreen.main.bounds, blockSize: blockSize, circleRadius: 1 )
+		tetrisBoard = TetrisBoardView(withFrame: UIScreen.main.bounds, blockSize: blockSize, circleRadius: 1)
 		tetrisBoard.tag = -1
 		view.addSubview(tetrisBoard)
 		
@@ -140,6 +140,7 @@ class TetrisViewController: UIViewController {
 		currBlock.getBoardArray(array: boardArray)
 	}
 	
+	// Returns a random tetris block figure
 	func startGrid() -> TetrisBlockView! {
 		let number = Int(arc4random_uniform(8))
 		let centerX = Int(UIScreen.main.bounds.size.width) / blockSize * blockSize / 2
@@ -179,12 +180,14 @@ class TetrisViewController: UIViewController {
 		}
 	}
 	
+	// Displays next block in bottom left corner
 	func displayNextBlock() {
 		startCenter = nextBlock.center
 		nextBlock.center = CGPoint(x: CGFloat(135), y: CGFloat(670.0)) // was 668
 		view.addSubview(nextBlock)
 	}
 	
+	// Checks if there are any full rows, updates score
 	func checkRows() {
 		var clearedRows = 0
 		for row in boardArray.getMinRow() ..< boardArray.numRows() {
@@ -196,6 +199,7 @@ class TetrisViewController: UIViewController {
 		changeScore(lines: clearedRows)
 	}
 	
+	// If full row, removes row from board
 	func findSubsInRow(row: Int) {
 		for sub in view.subviews {
 			if sub.tag < 0 {
