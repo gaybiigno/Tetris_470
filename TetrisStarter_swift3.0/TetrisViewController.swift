@@ -22,6 +22,7 @@ class TetrisViewController: UIViewController {
 	                                     width: UIScreen.main.bounds.width - 20.0, height: 100.0))
 	var score: UILabel!
 	var scoreCount = 0
+	var gameOver = false
 	
 	func startTimer() -> Timer {
 		let timer = Timer.scheduledTimer(timeInterval: 0.3, target: self, selector: #selector(updateTimer), userInfo: nil, repeats: true)
@@ -31,8 +32,9 @@ class TetrisViewController: UIViewController {
 	func updateTimer(_ sender: Timer) {
 		if currBlock.isOver() {
 			// If the game is over
-			if currBlock.center.y == startCenter.y {
+			if currBlock.center.y == 0.0 {
 				clock.invalidate()
+				gameOver = true
 				for sub in view.subviews {
 					sub.layer.opacity = 0.5
 				}
@@ -80,7 +82,9 @@ class TetrisViewController: UIViewController {
 		} 
         //let location = sender.location(in: tetrisBoard)
         //print(location)
-		currBlock.rotateClockWise()
+		if !gameOver {
+			currBlock.rotateClockWise()
+		}
      }
     
     @IBAction func didSwipeView(_ sender: UISwipeGestureRecognizer) {
@@ -142,13 +146,13 @@ class TetrisViewController: UIViewController {
 	
 	// Returns a random tetris block figure
 	func startGrid() -> TetrisBlockView! {
-		let number = Int(arc4random_uniform(8))
+		let number = Int(arc4random_uniform(8)) +  1
 		let centerX = Int(UIScreen.main.bounds.size.width) / blockSize * blockSize / 2
 		switch (number) {
-		case 0: // Send for I
-			let grid = ITetrisGrid()
-			return TetrisBlockView(color: grid.getColor(), grid: grid, blockSize: blockSize,
-			                        startY: grid.startY(), boardCenterX: CGFloat(centerX))
+//		case 0: // Send for I
+//			let grid = ITetrisGrid()
+//			return TetrisBlockView(color: grid.getColor(), grid: grid, blockSize: blockSize,
+//			                        startY: grid.startY(), boardCenterX: CGFloat(centerX))
 		case 1: // Send for J
 			let grid  = JTetrisGrid()
 			return TetrisBlockView(color: grid.getColor(), grid: grid, blockSize: blockSize,
