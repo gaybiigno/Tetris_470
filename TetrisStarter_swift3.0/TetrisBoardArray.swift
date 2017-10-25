@@ -46,11 +46,11 @@ class TetrisBoardArray: NSObject {
 			return false
 		}
 		for col in firstCol ... secondCol {
-			if !hasBlockAt(row: row, column: col) {
-				return false
+			if hasBlockAt(row: row, column: col) {
+				return true
 			}
 		}
-		return true
+		return false
 	}
 	
 	func changeValue(row: Int, column: Int) {

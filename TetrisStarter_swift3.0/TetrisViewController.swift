@@ -146,13 +146,13 @@ class TetrisViewController: UIViewController {
 	
 	// Returns a random tetris block figure
 	func startGrid() -> TetrisBlockView! {
-		let number = Int(arc4random_uniform(7)) + 1
+		let number = 0 //Int(arc4random_uniform(7)) + 1
 		let centerX = Int(UIScreen.main.bounds.size.width) / blockSize * blockSize / 2
 		switch (number) {
-//		case 0: // Send for I
-//			let grid = ITetrisGrid()
-//			return TetrisBlockView(color: grid.getColor(), grid: grid, blockSize: blockSize,
-//			                        startY: grid.startY(), boardCenterX: CGFloat(centerX))
+		case 0: // Send for I
+			let grid = ITetrisGrid()
+			return TetrisBlockView(color: grid.getColor(), grid: grid, blockSize: blockSize,
+			                        startY: grid.startY(), boardCenterX: CGFloat(centerX))
 		case 1: // Send for J
 			let grid  = JTetrisGrid()
 			return TetrisBlockView(color: grid.getColor(), grid: grid, blockSize: blockSize,

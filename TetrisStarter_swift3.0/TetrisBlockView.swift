@@ -46,7 +46,7 @@ class TetrisBlockView: UIView {
         backgroundColor = UIColor.clear
         addSubBlocksToView(grid: grid, blockSize: blockSize)
 		self.endRow = Int((self.center.y + self.toTravel + CGFloat(self.height/2)) / CGFloat(self.blockSize))
-		animator = UIViewPropertyAnimator(duration: 4.0, curve: .linear) { [unowned self] in
+		animator = UIViewPropertyAnimator(duration: 5.0, curve: .linear) { [unowned self] in
 			self.center.y += self.toTravel
         }
 		animator.addCompletion{_ in
@@ -64,7 +64,7 @@ class TetrisBlockView: UIView {
 	
 	// Initializes timer 0.5
 	func startTimer() -> Timer {
-		let timer = Timer.scheduledTimer(timeInterval: 0.05, target: self, selector: #selector(updateTimer), userInfo: nil, repeats: true)
+		let timer = Timer.scheduledTimer(timeInterval: 0.04, target: self, selector: #selector(updateTimer), userInfo: nil, repeats: true)
 		isPaused = false
 		return timer
 	}
@@ -75,44 +75,55 @@ class TetrisBlockView: UIView {
 			let temp_frame = self.layer.presentation()?.frame
 			var (row, col) = boardArray.getRowCol(point: CGPoint(x: (temp_frame?.origin.x)!, y: (temp_frame?.maxY)!))
 			if hasTurned, height != width {
-				//row += (height > width) ? (height - width) / blockSize : (width - height) / blockSize
 				row += (height - width) / blockSize
 			}
 			
-			for col_add in 0 ..<  blockModel.blocksWide() { //Int(width / blockSize) {
-				if  col + col_add < maxCols {
-					if row + 1 < maxRows, (boardArray.hasBlockAt(row: row + 1, column: col + col_add)),
-						height != blockSize {
-						let blockRow = 1
-						let blockCol = col_add
-						if (blockModel.hasBlockAt(row: blockRow, column: blockCol)) {
-							clock.invalidate()
-							//print("#1 Found block@ \(row + 1), \(col + col_add); block is \(blockRow), \(blockCol)")
-							self.animator.stopAnimation(true)
-							self.layer.removeAllAnimations()
-							hasFinished = true
-							endRow = row + 1
-							endDescent()
-							return
-						}
-					} else {
-						if row + 1 <= maxRows, (boardArray.hasBlockAt(row: row, column: col + col_add)) {
-							let blockRow = 0
-							let blockCol = col_add
-							if (blockModel.hasBlockAt(row: blockRow, column: blockCol)) {
+			if row + 1 < boardArray.getMinRow() {
+				animator.startAnimation()
+				return
+			}
+			
+			for col_add in 0 ..<  blockModel.blocksWide() {
+				if col + col_add < maxCols {
+					var blockRow = blockModel.blocksHeight() - 1
+					let blockCol = col_add
+						 // Check bottom row
+						if row + 1 <= maxRows, (boardArray.hasBlockAt(row: row + 1, column: col + col_add)),
+							(blockModel.hasBlockAt(row: blockRow, column: blockCol)) { // height != blockSize, 
 								clock.invalidate()
-								//print("#2 Found block@ \(row), \(col + col_add); block is \(blockRow), \(blockCol)")
+								//print("#1 Found block@ \(row + 1), \(col + col_add); model is \(blockRow), \(blockCol)")
 								self.animator.stopAnimation(true)
 								self.layer.removeAllAnimations()
 								hasFinished = true
-								if (height == blockSize) { // if its i-tetris
-									endRow = row
-								} else {
-									endRow = row + 1
-								}
+								//endRow = (height == blockSize) ? row : row + 1
+								endRow = row + 1 //(blockModel.blocksHeight() == 1) ? row : row + 1
 								endDescent()
 								return
-							}
+						} else {
+							blockRow = blockModel.blocksHeight() - 2
+							// Check middle or top row
+							if row < maxRows, (boardArray.hasBlockAt(row: row, column: col + col_add)),  blockModel.blocksHeight() - 2 > 0,(blockModel.hasBlockAt(row: blockRow, column: blockCol)) {
+									clock.invalidate()
+									//print("#2 Found block@ \(row), \(col + col_add); model is \(blockRow), \(blockCol)")
+									self.animator.stopAnimation(true)
+									self.layer.removeAllAnimations()
+									hasFinished = true
+									endRow = row + 1
+									endDescent()
+									return
+							} else {
+								// Check top row
+								blockRow = 0
+								if row - 1 < maxRows, (boardArray.hasBlockAt(row: row - 1, column: col + col_add)), (blockModel.hasBlockAt(row: blockRow, column: blockCol)) {
+									clock.invalidate()
+									//print("#3 Found block@ \(row - 1), \(col + col_add); model is \(blockRow), \(blockCol)")
+									self.animator.stopAnimation(true)
+									self.layer.removeAllAnimations()
+									hasFinished = true
+									endRow = row //+ 1
+									endDescent()
+									return
+								}
 						}
 					}
 				}
@@ -134,7 +145,7 @@ class TetrisBlockView: UIView {
 
 	func getBoardArray(array: TetrisBoardArray) {
 		boardArray = array
-		boardArray.printArray()
+		//boardArray.printArray()
 	}
 	
 	func setBoardBounds(boardSize: CGSize){
@@ -163,16 +174,8 @@ class TetrisBlockView: UIView {
     }
 	
 	func inHorizontalBounds(xoffset: Int, yoffset: Int) -> Bool {
-//		if 0.0 > (self.center.y - (blockBounds.height/2)) - CGFloat(offset) ||
-//			boardBounds.height < (self.center.y + (blockBounds.height/2)) + CGFloat(offset) {
-//			return false
-//		}
 		let temp_frame = self.layer.presentation()?.frame
 		let (row, col) = boardArray.getRowCol(point: CGPoint(x: (temp_frame?.origin.x)! +  CGFloat(xoffset), y: (temp_frame?.maxY)! + CGFloat(yoffset)))
-		print()
-		print("ROW AND COL of rotated bot left is \(row), \(col)")
-		print()
-		//let temp_grid = blockModel.getGrid()
 		
 		if !hasTurned, row + 1 != maxRows{
 			for i in 0 ..< blockModel.blocksWide(){
@@ -226,7 +229,6 @@ class TetrisBlockView: UIView {
 		animator.pauseAnimation()
 		let aPoint = CGPoint(x: 0.0, y: 0.0)
 		let aPointInSuperView = superview!.convert(aPoint, from: self)
-		var diffY = 0
 		print("self.center.y was at \(self.center.y)")
 
 		// Set up a new animation for the purpose of rotating the block.
@@ -239,12 +241,12 @@ class TetrisBlockView: UIView {
 		rotation.addCompletion { [unowned self] (_) in
 			let aPointTranslated = self.superview!.convert(aPoint, from: self)
 			let diffX = Int(abs(aPointInSuperView.x - aPointTranslated.x)) % self.blockSize
-			
 			UIView.animate(withDuration: 0.0, animations: {
 				if self.hasTurned {
-					self.center = CGPoint(x: self.center.x - CGFloat(diffX), y: self.center.y + CGFloat(diffY))
+					self.center = CGPoint(x: self.center.x - CGFloat(diffX), y: self.center.y)
 				} else {
-					self.center = CGPoint(x: self.center.x + CGFloat(diffX), y: self.center.y - CGFloat(diffY))
+					
+					self.center = CGPoint(x: self.center.x + CGFloat(diffX), y: self.center.y)
 				}
 				print("self.center.y is at \(self.center.y)")
 				self.hasTurned = !self.hasTurned
@@ -275,6 +277,8 @@ class TetrisBlockView: UIView {
 			animator.startAnimation()
 		}
         //printEdgeValues(edge: Edges.bottom)
+		let temp = blockModel.getGrid()
+		print(temp)
 		print("END CW ROTATE")
     }
 	
@@ -289,41 +293,70 @@ class TetrisBlockView: UIView {
 				clock.invalidate()
 			}
 		}
-		if hasTurned {
-			endRow = Int((self.center.y + CGFloat(self.width/2)) / CGFloat(self.blockSize))
-		}
+//		if hasTurned {
+//			endRow = Int((self.center.y + CGFloat(self.width/2)) / CGFloat(self.blockSize))
+//		}
 		let temp_frame = self.layer.presentation()?.frame
-		let row = endRow - (height / blockSize)
+		var row = endRow - (height / blockSize)
 		let col = Int((temp_frame?.origin.x)! / CGFloat(blockSize))
 		endRow = 0
-		if hasTurned, height != width {
-			self.center.y = CGFloat(row * blockSize) - CGFloat(blockSize / 2) // - CGFloat(blockSize) //CGFloat(height/4) //+ CGFloat(width/2)
+		var change: CGFloat = 0.0
+		
+		if !hasTurned, height == blockSize {
+			if row == maxRows - 1, !boardArray.hasBlockBetween(row: 20, firstCol: col, secondCol: col + 3) {
+				row += 1
+			}
+			
+			change -= CGFloat(blockSize)
+			self.center.y = CGFloat(row * blockSize) - CGFloat(CGFloat(blockSize) * 0.5) + change
+			
 			for i in 0 ..< blockModel.blocksHeight() {
 				for j in 0 ..< blockModel.blocksWide() {
 					if blockModel.hasBlockAt(row: i, column: j), row + i <= maxRows, col + j <= maxCols {
 						if boardArray.hasBlockAt(row: row + i, column: col + j) == false {
 							boardArray.changeValue(row: row + i, column: col + j)
+							print("Now has block at: \(row + i), \(col + j)")
 						}
-//						if boardArray.hasBlockAt(row: row + j, column: col + i + 1) == false {
-//							boardArray.changeValue(row: row + j, column: col + i)
-//						}
 					}
 				}
 			}
 		} else {
-			self.center.y = CGFloat(row * blockSize) - CGFloat(blockSize) //CGFloat(height/2)
-			for i in 0 ..< blockModel.blocksHeight() {
-				for j in 0 ..< blockModel.blocksWide() {
-					if blockModel.hasBlockAt(row: i, column: j), row + i <= maxRows, col + j <= maxCols {
-						if boardArray.hasBlockAt(row: row + i, column: col + j) == false {
-							boardArray.changeValue(row: row + i, column: col + j)
+			if hasTurned, blockModel.blocksHeight() % 2 != 0 { //height != width {
+				row -= 1
+				let diff = (self.width - self.height) / 2
+				self.center.y = CGFloat(row * blockSize) - CGFloat(diff) // - CGFloat(blockSize)
+				for i in 0 ..< blockModel.blocksHeight() {
+					for j in 0 ..< blockModel.blocksWide() {
+						if blockModel.hasBlockAt(row: i, column: j), row + i <= maxRows, col + j <= maxCols {
+							if boardArray.hasBlockAt(row: row + i, column: col + j) == false {
+								boardArray.changeValue(row: row + i, column: col + j)
+								print("Now has block at: \(row + i), \(col + j)")
+							}
+						}
+					}
+				}
+			} else {
+				if height == blockSize {
+					row -= 1
+					let diff = (self.width - self.height) / 2
+					self.center.y = CGFloat(row * blockSize) - CGFloat(diff) - CGFloat(blockSize / 2)
+					row -= 2
+				} else {
+					self.center.y = CGFloat(row * blockSize) - CGFloat(blockSize)
+				}
+				for i in 0 ..< blockModel.blocksHeight() {
+					for j in 0 ..< blockModel.blocksWide() {
+						if blockModel.hasBlockAt(row: i, column: j), row + i <= maxRows, col + j <= maxCols {
+							if boardArray.hasBlockAt(row: row + i, column: col + j) == false {
+								boardArray.changeValue(row: row + i, column: col + j)
+								print("Now has block at: \(row + i), \(col + j)")
+							}
 						}
 					}
 				}
 			}
 		}
-		
-		print("Ended at x = \(self.frame.minX), y = \(self.frame.maxY)")
+		//print("Ended at x = \(self.frame.minX), y = \(self.frame.maxY)")
 	}
 	
 	func removeRowFromView(row: Int) {
