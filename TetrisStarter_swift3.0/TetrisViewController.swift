@@ -25,7 +25,7 @@ class TetrisViewController: UIViewController {
 	var gameOver = false
 	
 	func startTimer() -> Timer {
-		let timer = Timer.scheduledTimer(timeInterval: 0.3, target: self, selector: #selector(updateTimer), userInfo: nil, repeats: true)
+		let timer = Timer.scheduledTimer(timeInterval: 0.2, target: self, selector: #selector(updateTimer), userInfo: nil, repeats: true)
 		return timer
 	}
 	
@@ -146,7 +146,7 @@ class TetrisViewController: UIViewController {
 	
 	// Returns a random tetris block figure
 	func startGrid() -> TetrisBlockView! {
-		let number = Int(arc4random_uniform(8)) +  1
+		let number = Int(arc4random_uniform(7)) + 1
 		let centerX = Int(UIScreen.main.bounds.size.width) / blockSize * blockSize / 2
 		switch (number) {
 //		case 0: // Send for I

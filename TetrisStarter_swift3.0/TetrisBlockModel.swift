@@ -88,9 +88,6 @@ class TetrisBlockModel: NSObject {
     }
     
     func hasBlockAt(row: Int, column: Int) -> Bool {
-//		if self.hasRotated {
-//			return self.grid[column][row]
-//		}
         return self.grid[row][column]
     }
     
@@ -104,15 +101,11 @@ class TetrisBlockModel: NSObject {
     }
     
     func blocksWide() -> Int {
-        //return numColumns()
 		return self.grid[0].count
-		//return (smallestVisibleGrid()![0].count < grid[0].count) ? smallestVisibleGrid()![0].count : grid[0].count
     }
     
     func blocksHeight() -> Int {
-        //return numRows()
 		return self.grid.count
-		//return ((smallestVisibleGrid()?.count)! < grid.count) ? (smallestVisibleGrid()?.count)! : grid.count
     }
     
     func smallestVisibleGrid() -> [[Bool]]? {
@@ -143,7 +136,7 @@ private extension TetrisBlockModel {
     func smallestSpanningGrid() -> [[Bool]]? {
         // Finds the smallest two dimentional array that contains all
         // squares of the Tetris grid.
-		if numRows() == 1 { // IF its itetris grid
+		if numRows() == 1 { // IF its i-tetris grid
 			print("Got itetris grid!")
 			var visibleBlock = [[Bool]]()
 			var currentRow = [Bool]()

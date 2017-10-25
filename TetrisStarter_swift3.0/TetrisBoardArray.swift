@@ -41,6 +41,18 @@ class TetrisBoardArray: NSObject {
 		return row < numRows() && column < numColumns() && self.grid[row][column]
 	}
 	
+	func hasBlockBetween(row: Int, firstCol: Int, secondCol: Int) -> Bool {
+		if !(row < numRows() && secondCol < numColumns() && firstCol >= 0){
+			return false
+		}
+		for col in firstCol ... secondCol {
+			if !hasBlockAt(row: row, column: col) {
+				return false
+			}
+		}
+		return true
+	}
+	
 	func changeValue(row: Int, column: Int) {
 		self.grid[row][column] = !self.grid[row][column]
 		// print("value at \(row), \(column) is \(grid[row][column])")
