@@ -54,6 +54,7 @@ class TetrisViewController: UIViewController {
 				nextBlock.center = startCenter
 				currBlock = nextBlock
 				nextBlock = startGrid()
+				currBlock.tag = 10
 				view.addSubview(currBlock)
 				displayNextBlock()
 				currBlock.setBoardBounds(boardSize: UIScreen.main.bounds.size)
@@ -113,6 +114,7 @@ class TetrisViewController: UIViewController {
 		
 		currBlock = startGrid()
 		nextBlock = startGrid()
+		currBlock.tag = 10
 		view.addSubview(currBlock)
 		displayNextBlock()
 		
@@ -146,7 +148,7 @@ class TetrisViewController: UIViewController {
 	
 	// Returns a random tetris block figure
 	func startGrid() -> TetrisBlockView! {
-		let number = 0 //Int(arc4random_uniform(7)) + 1
+		let number = Int(arc4random_uniform(7))
 		let centerX = Int(UIScreen.main.bounds.size.width) / blockSize * blockSize / 2
 		switch (number) {
 		case 0: // Send for I
@@ -206,16 +208,17 @@ class TetrisViewController: UIViewController {
 	// If full row, removes row from board
 	func findSubsInRow(row: Int) {
 		for sub in view.subviews {
-			if sub.tag < 0 {
-				continue
-			}
-			let viewFrame = sub.frame
-			let minRow = Int(viewFrame.minY / CGFloat(blockSize))
-			let maxRow = Int((viewFrame.minY + viewFrame.height) / CGFloat(blockSize))
-			for r in minRow ... maxRow {
-				if r == row {
-					let resub = sub as! TetrisBlockView
-					resub.removeRowFromView(row: row - minRow)
+			if sub.tag == 10 {
+				let viewFrame = view.convert(sub.frame.origin, to: view)
+				var minRow = Int(viewFrame.y / CGFloat(blockSize)) + 1 + 1
+				//minRow += (Int(sub.frame.height) / blockSize) == 1 ? 1 : 0
+				let maxRow = minRow + Int((Int(sub.frame.height) / blockSize) - 1)
+				
+				for r in minRow ... maxRow {
+					if r == row {
+						let resub = sub as! TetrisBlockView
+						resub.removeRowFromView(row: row - minRow)
+					}
 				}
 			}
 		}

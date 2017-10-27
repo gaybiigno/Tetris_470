@@ -83,18 +83,20 @@ class TetrisBoardArray: NSObject {
 	
 	// Returns true if entire row is full
 	func checkRow(row: Int) -> Bool {
-		for col in 0 ..< numColumns() {
-			if !grid[row][col] {
+		//printArray()
+		for col in 4 ..< 8 { //numColumns() {
+			if grid[row][col] == false {
 				return false
 			}
-			// If cell is true, reset to false
+		}
+		for col in 0 ..< numColumns() { 
 			grid[row][col] = false
 		}
 		
 		// Reset minimum
 		if row == min {
 			for r in min + 1 ..< numRows() {
-				if grid[r].contains(true) {
+				if hasBlockBetween(row: r, firstCol: 0, secondCol: numColumns() - 1) { //grid[r].contains(true) {
 					min = r
 					break
 				}

@@ -137,7 +137,6 @@ private extension TetrisBlockModel {
         // Finds the smallest two dimentional array that contains all
         // squares of the Tetris grid.
 		if numRows() == 1 { // IF its i-tetris grid
-			print("Got itetris grid!")
 			var visibleBlock = [[Bool]]()
 			var currentRow = [Bool]()
 			for _ in 0 ..< 4 {

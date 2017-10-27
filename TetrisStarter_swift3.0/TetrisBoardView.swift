@@ -26,7 +26,7 @@ class TetrisBoardView: UIView {
     override func draw(_ rect: CGRect) {
         super.draw(rect)
         //let numRows = Int(rect.size.height / CGFloat(gapBetweenCenters))
-		let numRows = 20
+		let numRows = 19
         let numColumns = Int(rect.size.width / CGFloat(gapBetweenCenters))
 		print("BOARD ROWS: \(numRows), COLS: \(numColumns)")
 
