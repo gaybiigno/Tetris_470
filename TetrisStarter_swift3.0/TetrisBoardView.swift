@@ -25,12 +25,12 @@ class TetrisBoardView: UIView {
     // An empty implementation adversely affects performance during animation.
     override func draw(_ rect: CGRect) {
         super.draw(rect)
-        //let numRows = Int(rect.size.height / CGFloat(gapBetweenCenters))
 		let numRows = 19
         let numColumns = Int(rect.size.width / CGFloat(gapBetweenCenters))
 		print("BOARD ROWS: \(numRows), COLS: \(numColumns)")
 
         var circles = [UIBezierPath]()
+		
         for row in 0 ... numRows {
             let y = 30 + gapBetweenCenters * CGFloat(row) // lined up w/ 30 +
             for column in 0 ... numColumns {
@@ -39,13 +39,16 @@ class TetrisBoardView: UIView {
 				let aPointInSuperView = superview!.convert(center, from: self)
 				let marker = UIBezierPath(arcCenter: aPointInSuperView, radius: markerRadius,
 				                          startAngle: 0.0, endAngle: CGFloat(2.0 * Double.pi), clockwise: false)
+				if row + 1 >= numRows {
+					UIColor.black.setFill()
+				} else {
+					UIColor.lightGray.setFill()
+				}
+				marker.fill()
                 circles.append(marker)
             }
         }
         UIColor.lightGray.setFill()
-        for circle in circles {
-            circle.fill()
-        }
     }
 
 

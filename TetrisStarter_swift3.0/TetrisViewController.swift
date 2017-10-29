@@ -139,7 +139,7 @@ class TetrisViewController: UIViewController {
 		currBlock.setBoardBounds(boardSize: UIScreen.main.bounds.size)
 		print("Board bounds: \(UIScreen.main.bounds.size)")
 		
-		let numRows = 21 //Int(UIScreen.main.bounds.size.height / CGFloat(blockSize))
+		let numRows = 21
 		let numColumns = Int(UIScreen.main.bounds.size.width / CGFloat(blockSize))
 		
 		boardArray = TetrisBoardArray(numRows: numRows, numCols: numColumns)
@@ -189,7 +189,7 @@ class TetrisViewController: UIViewController {
 	// Displays next block in bottom left corner
 	func displayNextBlock() {
 		startCenter = nextBlock.center
-		nextBlock.center = CGPoint(x: CGFloat(135), y: CGFloat(670.0)) // was 668
+		nextBlock.center = CGPoint(x: CGFloat(135), y: CGFloat(670.0))
 		view.addSubview(nextBlock)
 	}
 	
@@ -210,8 +210,7 @@ class TetrisViewController: UIViewController {
 		for sub in view.subviews {
 			if sub.tag == 10 {
 				let viewFrame = view.convert(sub.frame.origin, to: view)
-				var minRow = Int(viewFrame.y / CGFloat(blockSize)) + 1 + 1
-				//minRow += (Int(sub.frame.height) / blockSize) == 1 ? 1 : 0
+				let minRow = Int(viewFrame.y / CGFloat(blockSize)) + 1 + 1
 				let maxRow = minRow + Int((Int(sub.frame.height) / blockSize) - 1)
 				
 				for r in minRow ... maxRow {

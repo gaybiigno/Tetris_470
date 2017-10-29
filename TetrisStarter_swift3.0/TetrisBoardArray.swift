@@ -2,14 +2,13 @@
 //  TetrisBoardArray.swift
 //  TetrisStarter_swift3.0
 //
-//  Created by Gaybriella Igno on 10/8/17.
+//  Created by Gaybi Igno on 10/8/17.
 //  Copyright © 2017 Ali A. Kooshesh. All rights reserved.
 //
 
 import UIKit
 
 class TetrisBoardArray: NSObject {
-	//private var grid: ArrayWrapper
 	var grid: [[Bool]]
 	var min: Int
 	
@@ -22,11 +21,11 @@ class TetrisBoardArray: NSObject {
 			}
 			array.append(currentRow)
 		}
-		self.grid = array //ArrayWrapper(array)
+		self.grid = array
 		self.min = grid.count
 		super.init()
 		
-		print("ARRAY ROWS: \(grid.count), COLS: \(grid[0].count)")
+		//print("ARRAY ROWS: \(grid.count), COLS: \(grid[0].count)")
 	}
 	
 	func numColumns() -> Int {
@@ -55,7 +54,6 @@ class TetrisBoardArray: NSObject {
 	
 	func changeValue(row: Int, column: Int) {
 		self.grid[row][column] = !self.grid[row][column]
-		// print("value at \(row), \(column) is \(grid[row][column])")
 		if row < min {
 			min = row
 		}
@@ -84,7 +82,7 @@ class TetrisBoardArray: NSObject {
 	// Returns true if entire row is full
 	func checkRow(row: Int) -> Bool {
 		//printArray()
-		for col in 4 ..< 8 { //numColumns() {
+		for col in 0 ..< numColumns() {
 			if grid[row][col] == false {
 				return false
 			}
@@ -96,7 +94,7 @@ class TetrisBoardArray: NSObject {
 		// Reset minimum
 		if row == min {
 			for r in min + 1 ..< numRows() {
-				if hasBlockBetween(row: r, firstCol: 0, secondCol: numColumns() - 1) { //grid[r].contains(true) {
+				if hasBlockBetween(row: r, firstCol: 0, secondCol: numColumns() - 1) {
 					min = r
 					break
 				}
